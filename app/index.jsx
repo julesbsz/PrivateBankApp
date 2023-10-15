@@ -2,6 +2,7 @@ import { View, Text, ActivityIndicator, StyleSheet } from "react-native";
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
+import { loadFonts } from "../useFonts";
 
 const InitialLayout = () => {
 	const [loading, setLoading] = useState(true);
@@ -24,6 +25,7 @@ const InitialLayout = () => {
 			});
 		};
 
+		loadFonts();
 		handleFirstLaunch();
 	}, []);
 

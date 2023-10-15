@@ -13,7 +13,7 @@ const Onboarding = () => {
 			</View>
 
 			<Pressable style={[global.button, global.buttonShadow]} onPress={() => {}}>
-				<Text style={[global.text, global.black]}>Begin Now</Text>
+				<Text style={[global.text, global.buttonText]}>Begin Now</Text>
 			</Pressable>
 		</View>
 	);
