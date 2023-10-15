@@ -12,14 +12,14 @@ const InitialLayout = () => {
 	useEffect(() => {
 		const handleFirstLaunch = async () => {
 			await AsyncStorage.getItem("alreadyLaunched").then(async (value) => {
-				if (!value) {
+				if (value) {
 					await AsyncStorage.setItem("alreadyLaunched", "true");
 					setIsFirstLaunch(true);
 					setLoading(false);
 					router.push("onboarding");
 				} else {
 					setIsFirstLaunch(false);
-					// setLoading(false);
+					setLoading(false);
 				}
 			});
 		};
