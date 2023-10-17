@@ -17,8 +17,8 @@ const InitialLayout = () => {
 			if (isFirstTime) {
 				router.replace("onboarding");
 			} else {
-				// router.replace("(auth)/register");
-				router.replace("onboarding");
+				router.replace("(auth)/register");
+				// router.replace("onboarding");
 			}
 		}
 	}, [initialized, user]);

@@ -6,7 +6,7 @@
 		"scheme": "privatebank",
 		"orientation": "portrait",
 		"icon": "./assets/icon.png",
-		"userInterfaceStyle": "light",
+		"userInterfaceStyle": "dark",
 		"splash": {
 			"image": "./assets/splash.png",
 			"resizeMode": "contain",
