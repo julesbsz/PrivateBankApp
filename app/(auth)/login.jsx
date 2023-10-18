@@ -1,29 +1,49 @@
 import { View, Text, SafeAreaView, StyleSheet, TextInput, Pressable, TouchableWithoutFeedback, Keyboard } from "react-native";
 import global from "../../assets/style";
-import React from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useRouter } from "expo-router";
+import { AuthContext } from "../context/AuthContext";
 
 const LoginPage = () => {
+	const { handleLogin, user } = useContext(AuthContext);
 	const router = useRouter();
 
-	const DismissKeyboard = ({ children }) => (
-		<TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-			<View>{children}</View>
-		</TouchableWithoutFeedback>
-	);
+	const [email, setEmail] = useState("j.bousrez@outlook.com");
+	const [password, setPassword] = useState("12345678");
+
+	const sanitizeFields = () => {
+		setEmail(email.trim());
+		setPassword(password.trim());
+
+		if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email)) {
+			Alert.alert("Error", "Invalid email address");
+			return;
+		}
+
+		return handleLogin(email, password);
+	};
+
+	useEffect(() => {
+		// user already connected -> redirect to home
+		if (user) {
+			// router.replace("(inside)/home");
+			AsyncStorage.removeItem("user");
+			router.replace("(auth)/register");
+		}
+	}, []);
 
 	return (
-		<DismissKeyboard>
+		<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 			<SafeAreaView style={styles.container}>
 				<Text style={global.h1}>Login</Text>
 
 				<View style={styles.columnContainer}>
-					<TextInput style={global.textInput} onChangeText={() => console.log("changed")} placeholder="E-mail address" placeholderTextColor="#C9C8C9" inputMode="email" keyboardType="email-address" />
-					<TextInput style={global.textInput} onChangeText={() => console.log("changed")} placeholder="Password" placeholderTextColor="#C9C8C9" secureTextEntry={true} />
+					<TextInput style={global.textInput} value={email} onChangeText={(text) => setEmail(text)} placeholder="E-mail address" placeholderTextColor="#C9C8C9" inputMode="email" keyboardType="email-address" />
+					<TextInput style={global.textInput} value={password} onChangeText={(text) => setPassword(text)} placeholder="Password" placeholderTextColor="#C9C8C9" secureTextEntry={true} />
 				</View>
 
 				<View style={styles.buttonsView}>
-					<Pressable style={[global.button, global.buttonShadow]}>
+					<Pressable style={[global.button, global.buttonShadow]} onPress={sanitizeFields}>
 						<Text style={[global.text, global.buttonText]}>Login</Text>
 					</Pressable>
 
@@ -32,7 +52,7 @@ const LoginPage = () => {
 					</Pressable>
 				</View>
 			</SafeAreaView>
-		</DismissKeyboard>
+		</TouchableWithoutFeedback>
 	);
 };
 

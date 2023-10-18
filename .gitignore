@@ -33,3 +33,10 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
+
+# pocketbase
+/pocketbase
+/pb_data/
+
+# env
+.env

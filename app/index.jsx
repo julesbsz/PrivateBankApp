@@ -2,6 +2,7 @@ import { View, ActivityIndicator, StyleSheet } from "react-native";
 import { useEffect, useContext } from "react";
 import { useRouter } from "expo-router";
 import { AuthContext } from "./context/AuthContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const InitialLayout = () => {
 	const { user, isFirstTime, initialized } = useContext(AuthContext);
@@ -12,13 +13,15 @@ const InitialLayout = () => {
 		if (!initialized) return;
 
 		if (user) {
-			router.replace("(inside)/home");
+			// console.log("index; a user is connected: ", user);
+			// router.replace("(inside)/home");
+			AsyncStorage.removeItem("user");
+			router.replace("(auth)/register");
 		} else {
 			if (isFirstTime) {
 				router.replace("onboarding");
 			} else {
 				router.replace("(auth)/register");
-				// router.replace("onboarding");
 			}
 		}
 	}, [initialized, user]);
