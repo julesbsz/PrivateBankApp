@@ -37,6 +37,3 @@ yarn-error.*
 # pocketbase
 /pocketbase
 /pb_data/
-
-# env
-.env
