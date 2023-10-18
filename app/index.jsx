@@ -1,46 +1,35 @@
-import { View, Text, ActivityIndicator, StyleSheet } from "react-native";
-import { useEffect, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { View, ActivityIndicator, StyleSheet } from "react-native";
+import { useEffect, useContext } from "react";
 import { useRouter } from "expo-router";
-import { loadFonts } from "../useFonts";
+import { AuthContext } from "./context/AuthContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const InitialLayout = () => {
-	const [loading, setLoading] = useState(true);
-	const [isFirstLaunch, setIsFirstLaunch] = useState(false);
+	const { user, isFirstTime, initialized } = useContext(AuthContext);
 
 	const router = useRouter();
 
 	useEffect(() => {
-		const handleFirstLaunch = async () => {
-			await AsyncStorage.getItem("alreadyLaunched").then(async (value) => {
-				if (value) {
-					await AsyncStorage.setItem("alreadyLaunched", "true");
-					setIsFirstLaunch(true);
-					setLoading(false);
-					router.push("onboarding");
-				} else {
-					setIsFirstLaunch(false);
-					setLoading(false);
-				}
-			});
-		};
+		if (!initialized) return;
 
-		loadFonts();
-		handleFirstLaunch();
-	}, []);
+		if (user) {
+			// console.log("index; a user is connected: ", user);
+			// router.replace("(inside)/home");
+			AsyncStorage.removeItem("user");
+			router.replace("(auth)/register");
+		} else {
+			if (isFirstTime) {
+				router.replace("onboarding");
+			} else {
+				router.replace("(auth)/register");
+			}
+		}
+	}, [initialized, user]);
 
-	if (loading) {
+	if (!initialized) {
 		return (
 			<View style={styles.container}>
 				<ActivityIndicator size="large" color="#13C782" />
-			</View>
-		);
-	}
-
-	if (!loading && !isFirstLaunch) {
-		return (
-			<View>
-				<Text>InitialLayout</Text>
 			</View>
 		);
 	}
