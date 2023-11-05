@@ -13,10 +13,10 @@ const HomePage = () => {
 
 const styles = StyleSheet.create({
 	container: {
-		paddingTop: 50,
+		paddingTop: 20,
 		paddingBottom: 50,
-		paddingLeft: 20,
-		paddingRight: 20,
+		paddingLeft: 10,
+		paddingRight: 10,
 		height: "100%",
 		width: "100%",
 		display: "flex",

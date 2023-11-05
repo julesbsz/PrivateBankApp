@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
 		backgroundColor: "#262329",
 		marginTop: 40,
 		paddingTop: 7,
-		width: "95%",
+		width: "100%",
 		height: 250,
 		display: "flex",
 		flexDirection: "column",
