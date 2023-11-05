@@ -1,7 +1,7 @@
 // Packages
 import { View, StyleSheet, Text } from "react-native";
-import React, { useRef, useMemo, useCallback } from "react";
-import { BottomSheetModal, BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import { useRef, useMemo, useCallback, useState } from "react";
+import { BottomSheetModal, BottomSheetModalProvider, BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 
 // Components
 import CardComponent from "../components/Card";
@@ -14,12 +14,12 @@ const HomePage = () => {
 	const bottomSheetModalRef = useRef(null);
 	const snapPoints = useMemo(() => ["75%", "75%"], []);
 
-	const handlePresentModalPress = useCallback(() => {
-		bottomSheetModalRef.current?.present();
-	}, []);
-
 	const handleSheetChanges = useCallback((index) => {
 		console.log("handleSheetChanges", index);
+	}, []);
+
+	const renderBackdrop = useCallback((props) => {
+		return <BottomSheetBackdrop {...props} opacity={0.6} appearsOnIndex={0} disappearsOnIndex={-1} />;
 	}, []);
 
 	return (
@@ -32,8 +32,8 @@ const HomePage = () => {
 				</View>
 			</View>
 
-			<BottomSheetModal ref={bottomSheetModalRef} index={1} snapPoints={snapPoints} onChange={handleSheetChanges}>
-				<View style={styles.contentContainer}>
+			<BottomSheetModal backdropComponent={renderBackdrop} handleIndicatorStyle={{ backgroundColor: "#C9C8C9", width: 60, height: 7 }} backgroundStyle={{ backgroundColor: "#262329" }} ref={bottomSheetModalRef} index={1} snapPoints={snapPoints} onChange={handleSheetChanges}>
+				<View>
 					<Text>Awesome 🎉</Text>
 				</View>
 			</BottomSheetModal>
@@ -74,6 +74,10 @@ const styles = StyleSheet.create({
 		width: "100%",
 		display: "flex",
 		alignItems: "center",
+	},
+	modalContainer: {
+		backgroundColor: "#262329",
+		color: "red",
 	},
 });
 
