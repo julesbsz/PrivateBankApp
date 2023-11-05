@@ -4,6 +4,7 @@ import { useRouter } from "expo-router";
 import { loadFonts } from "../../useFonts";
 import PocketBase from "pocketbase";
 import { Alert } from "react-native";
+import "eventsource-polyfill";
 
 export const AuthContext = createContext({
 	user: null,
@@ -11,6 +12,7 @@ export const AuthContext = createContext({
 	initialized: false,
 	handleRegister: () => {},
 	handleLogin: () => {},
+	handleLogout: () => {},
 });
 
 const pb = new PocketBase(process.env.POCKETBASE_URL);
@@ -30,6 +32,7 @@ export const AuthProvider = ({ children }) => {
 			emailVisibility: true,
 			password,
 			passwordConfirm: confirmedPassword,
+			balance: 0,
 		};
 
 		await pb
@@ -99,5 +102,26 @@ export const AuthProvider = ({ children }) => {
 		init();
 	}, []);
 
-	return <AuthContext.Provider value={{ user, isFirstTime, initialized, handleRegister, handleLogin }}>{children}</AuthContext.Provider>;
+	useEffect(() => {
+		if (!user) return;
+
+		console.log("subscribing to user collection...");
+		pb.collection("users")
+			.subscribe("2bjd0nstypfbqd7", function (e) {
+				console.log(e.action);
+				console.log(e.record);
+			})
+			.then(() => {
+				console.log("subscribed to user collection");
+			})
+			.catch((err) => {
+				console.log("error subscribing to user collection:", err);
+			});
+
+		return () => {
+			pb.collection("users").unsubscribe("2bjd0nstypfbqd7");
+		};
+	}, [user]);
+
+	return <AuthContext.Provider value={{ user, isFirstTime, initialized, handleRegister, handleLogin, handleLogout }}>{children}</AuthContext.Provider>;
 };
