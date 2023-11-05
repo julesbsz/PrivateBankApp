@@ -1,14 +1,18 @@
-import { View, StyleSheet, Pressable } from "react-native";
+import React, { useCallback } from "react";
+import { View, StyleSheet, Pressable, Text } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 
-const AddTransactionComponent = () => {
+const AddTransactionComponent = ({ bottomSheetModalRef }) => {
+	const handlePresentModalPress = useCallback(() => {
+		bottomSheetModalRef.current?.present();
+	}, [bottomSheetModalRef]);
+
 	return (
-		<Pressable style={[styles.pressable, styles.pressableShadow]}>
+		<Pressable style={[styles.pressable, styles.pressableShadow]} onPress={handlePresentModalPress}>
 			<Entypo name="plus" size={38} color="black" />
 		</Pressable>
 	);
 };
-
 const styles = StyleSheet.create({
 	pressable: {
 		height: 70,
@@ -28,6 +32,10 @@ const styles = StyleSheet.create({
 		shadowOpacity: 0.45,
 		shadowRadius: 31,
 		elevation: 0,
+	},
+	contentContainer: {
+		flex: 1,
+		alignItems: "center",
 	},
 });
 

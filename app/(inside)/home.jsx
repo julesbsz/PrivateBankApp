@@ -1,5 +1,7 @@
-// React
-import { View, StyleSheet } from "react-native";
+// Packages
+import { View, StyleSheet, Text } from "react-native";
+import React, { useRef, useMemo, useCallback } from "react";
+import { BottomSheetModal, BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 
 // Components
 import CardComponent from "../components/Card";
@@ -9,14 +11,33 @@ import AddTransactionComponent from "../components/AddTransaction";
 import global from "../../assets/style";
 
 const HomePage = () => {
-	return (
-		<View style={styles.container}>
-			<CardComponent />
+	const bottomSheetModalRef = useRef(null);
+	const snapPoints = useMemo(() => ["75%", "75%"], []);
 
-			<View style={styles.containerTransactionBtn}>
-				<AddTransactionComponent />
+	const handlePresentModalPress = useCallback(() => {
+		bottomSheetModalRef.current?.present();
+	}, []);
+
+	const handleSheetChanges = useCallback((index) => {
+		console.log("handleSheetChanges", index);
+	}, []);
+
+	return (
+		<BottomSheetModalProvider>
+			<View style={styles.container}>
+				<CardComponent />
+
+				<View style={styles.containerTransactionBtn}>
+					<AddTransactionComponent bottomSheetModalRef={bottomSheetModalRef} />
+				</View>
 			</View>
-		</View>
+
+			<BottomSheetModal ref={bottomSheetModalRef} index={1} snapPoints={snapPoints} onChange={handleSheetChanges}>
+				<View style={styles.contentContainer}>
+					<Text>Awesome 🎉</Text>
+				</View>
+			</BottomSheetModal>
+		</BottomSheetModalProvider>
 	);
 };
 
