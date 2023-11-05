@@ -13,10 +13,7 @@ const InitialLayout = () => {
 		if (!initialized) return;
 
 		if (user) {
-			// console.log("index; a user is connected: ", user);
-			// router.replace("(inside)/home");
-			AsyncStorage.removeItem("user");
-			router.replace("(auth)/register");
+			router.replace("(inside)/home");
 		} else {
 			if (isFirstTime) {
 				router.replace("onboarding");

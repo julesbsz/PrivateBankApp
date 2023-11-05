@@ -26,9 +26,7 @@ const LoginPage = () => {
 	useEffect(() => {
 		// user already connected -> redirect to home
 		if (user) {
-			// router.replace("(inside)/home");
-			AsyncStorage.removeItem("user");
-			router.replace("(auth)/register");
+			router.replace("(inside)/home");
 		}
 	}, []);
 
