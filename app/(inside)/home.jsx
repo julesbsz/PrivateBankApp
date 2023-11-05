@@ -1,12 +1,21 @@
-import { View, Text, StyleSheet } from "react-native";
-import React from "react";
-import global from "../../assets/style";
+// React
+import { View, StyleSheet } from "react-native";
+
+// Components
 import CardComponent from "../components/Card";
+import AddTransactionComponent from "../components/AddTransaction";
+
+// Styles
+import global from "../../assets/style";
 
 const HomePage = () => {
 	return (
 		<View style={styles.container}>
 			<CardComponent />
+
+			<View style={styles.containerTransactionBtn}>
+				<AddTransactionComponent />
+			</View>
 		</View>
 	);
 };
@@ -37,6 +46,13 @@ const styles = StyleSheet.create({
 	image: {
 		width: "100%",
 		height: "40%",
+	},
+	containerTransactionBtn: {
+		position: "absolute",
+		bottom: 40,
+		width: "100%",
+		display: "flex",
+		alignItems: "center",
 	},
 });
 
