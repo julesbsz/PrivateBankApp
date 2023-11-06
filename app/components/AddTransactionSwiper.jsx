@@ -1,15 +1,20 @@
-import React, { useRef } from "react";
-import { View, Text, StyleSheet, Pressable } from "react-native";
-import PagerView from "react-native-pager-view";
+import React, { useState } from "react";
+import { View, Text, StyleSheet, Pressable, TextInput } from "react-native";
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from "react-native-reanimated";
 
 const AddTransactionSwiperComponent = () => {
-	const pagerRef = useRef(null);
 	const activeTabIndex = useSharedValue(0);
+	const [operation, setOperation] = useState("income");
+	const [amout, setAmout] = useState(null);
 
 	const handleTabPress = (tabIndex) => {
-		pagerRef.current.setPage(tabIndex);
 		activeTabIndex.value = tabIndex;
+
+		if (tabIndex === 0) {
+			setOperation("income");
+		} else {
+			setOperation("expense");
+		}
 	};
 
 	const animatedIndicatorStyle = useAnimatedStyle(() => {
@@ -25,6 +30,7 @@ const AddTransactionSwiperComponent = () => {
 			],
 		};
 	});
+
 	const animatedIncomeTextStyle = useAnimatedStyle(() => {
 		return {
 			color: activeTabIndex.value === 0 ? "#262329" : "#C9C8C9",
@@ -36,6 +42,10 @@ const AddTransactionSwiperComponent = () => {
 			color: activeTabIndex.value === 1 ? "#262329" : "#C9C8C9",
 		};
 	});
+
+	const onChangeAmount = (number) => {
+		setAmout(number);
+	};
 
 	return (
 		<View style={styles.mainContainer}>
@@ -51,14 +61,17 @@ const AddTransactionSwiperComponent = () => {
 				</Pressable>
 			</View>
 
-			<PagerView style={styles.pagerView} initialPage={0} ref={pagerRef}>
-				<View key="1" style={styles.page}>
-					<Text>First page</Text>
+			<View style={styles.pagerView}>
+				<View style={styles.inputRow}>
+					{operation === "income" ? <Text style={styles.text}>+</Text> : <Text style={styles.text}>-</Text>}
+					<TextInput style={styles.input} onChangeText={onChangeAmount} value={amout} placeholder="AMOUNT" keyboardType="numeric" autoCorrect={false} autoFocus={true} />
+					{amout && <Text style={styles.currency}>$</Text>}
 				</View>
-				<View key="2" style={styles.page}>
-					<Text>Second page</Text>
-				</View>
-			</PagerView>
+
+				<Pressable style={[buttonStyle.button, buttonStyle.buttonShadow]}>
+					<Text style={[buttonStyle.text, buttonStyle.buttonText]}>Save</Text>
+				</Pressable>
+			</View>
 		</View>
 	);
 };
@@ -99,20 +112,69 @@ const styles = StyleSheet.create({
 	},
 	pagerView: {
 		padding: 20,
-		backgroundColor: "white",
+		// backgroundColor: "white",
 		width: "100%",
-		height: "100%",
+		height: "auto",
 		display: "flex",
+		flexDirection: "column",
+		alignItems: "center",
+		justifyContent: "flex-start",
+	},
+	inputRow: {
+		display: "flex",
+		flexDirection: "row",
 		alignItems: "center",
 		justifyContent: "center",
+		gap: 10,
+		marginBottom: 20,
 	},
-	// page: {
-	// 	flex: 1,
-	// 	justifyContent: "center",
-	// 	alignItems: "center",
-	// 	height: "100%",
-	// 	width: "100%",
-	// },
+	text: {
+		fontFamily: "SpaceGrotesk",
+		fontSize: 75,
+		color: "white",
+	},
+	currency: {
+		fontFamily: "SpaceGrotesk",
+		fontSize: 50,
+		color: "white",
+	},
+	input: {
+		fontFamily: "SpaceGrotesk",
+		fontSize: 50,
+		color: "white",
+	},
+});
+
+const buttonStyle = StyleSheet.create({
+	text: {
+		fontFamily: "PlusJakartaSans",
+		color: "#FFFFFF",
+		fontSize: 20,
+		textAlign: "center",
+		lineHeight: 36.5,
+	},
+	button: {
+		backgroundColor: "#13C782",
+		borderRadius: 50,
+		paddingTop: 13,
+		paddingBottom: 13,
+		paddingLeft: 86,
+		paddingRight: 86,
+	},
+	buttonShadow: {
+		shadowColor: "#13C782",
+		shadowOffset: {
+			width: 0,
+			height: 0,
+		},
+		shadowOpacity: 0.35,
+		shadowRadius: 31,
+		elevation: 0,
+	},
+	buttonText: {
+		fontFamily: "SpaceGrotesk",
+		color: "#000000",
+	},
 });
 
 export default AddTransactionSwiperComponent;
