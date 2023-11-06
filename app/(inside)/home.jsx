@@ -5,7 +5,8 @@ import { BottomSheetModal, BottomSheetModalProvider, BottomSheetBackdrop } from 
 
 // Components
 import CardComponent from "../components/Card";
-import AddTransactionComponent from "../components/AddTransaction";
+import AddTransactionComponent from "../components/AddTransactionButton";
+import AddTransactionSwiperComponent from "../components/AddTransactionSwiper";
 
 // Styles
 import global from "../../assets/style";
@@ -33,9 +34,7 @@ const HomePage = () => {
 			</View>
 
 			<BottomSheetModal backdropComponent={renderBackdrop} handleIndicatorStyle={{ backgroundColor: "#C9C8C9", width: 60, height: 7 }} backgroundStyle={{ backgroundColor: "#262329" }} ref={bottomSheetModalRef} index={1} snapPoints={snapPoints} onChange={handleSheetChanges}>
-				<View>
-					<Text>Awesome 🎉</Text>
-				</View>
+				<AddTransactionSwiperComponent />
 			</BottomSheetModal>
 		</BottomSheetModalProvider>
 	);
@@ -78,6 +77,9 @@ const styles = StyleSheet.create({
 	modalContainer: {
 		backgroundColor: "#262329",
 		color: "red",
+	},
+	pagerView: {
+		flex: 1,
 	},
 });
 
