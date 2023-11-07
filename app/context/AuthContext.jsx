@@ -55,6 +55,8 @@ export const AuthProvider = ({ children }) => {
 					showAlert("Error", errorMessage);
 				}
 			});
+
+		return false;
 	};
 
 	const handleLogin = async (email, password) => {
@@ -71,6 +73,8 @@ export const AuthProvider = ({ children }) => {
 			.catch(() => {
 				showAlert("Error", "Invalid credentials, please try again.");
 			});
+
+		return false;
 	};
 
 	const handleLogout = async () => {

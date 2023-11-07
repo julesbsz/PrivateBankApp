@@ -1,17 +1,20 @@
-import { View, Text, SafeAreaView, StyleSheet, TextInput, Pressable, TouchableWithoutFeedback, Keyboard } from "react-native";
+import { View, Text, SafeAreaView, StyleSheet, TextInput, Pressable, TouchableWithoutFeedback, Keyboard, Alert } from "react-native";
 import global from "../../assets/style";
 import React, { useState, useContext, useEffect } from "react";
 import { useRouter } from "expo-router";
 import { AuthContext } from "../context/AuthContext";
+import ButtonComponent from "../components/Button";
 
 const LoginPage = () => {
 	const { handleLogin, user } = useContext(AuthContext);
 	const router = useRouter();
 
+	const [loading, setLoading] = useState(false);
 	const [email, setEmail] = useState("j.bousrez@outlook.com");
 	const [password, setPassword] = useState("12345678");
 
-	const sanitizeFields = () => {
+	const sanitizeFields = async () => {
+		setLoading(true);
 		setEmail(email.trim());
 		setPassword(password.trim());
 
@@ -20,11 +23,14 @@ const LoginPage = () => {
 			return;
 		}
 
-		return handleLogin(email, password);
+		const success = await handleLogin(email, password);
+		console.log("isConnected:", isConnected);
+		if (!success) {
+			setLoading(false);
+		}
 	};
 
 	useEffect(() => {
-		// user already connected -> redirect to home
 		if (user) {
 			router.replace("(inside)/home");
 		}
@@ -41,9 +47,7 @@ const LoginPage = () => {
 				</View>
 
 				<View style={styles.buttonsView}>
-					<Pressable style={[global.button, global.buttonShadow]} onPress={sanitizeFields}>
-						<Text style={[global.text, global.buttonText]}>Login</Text>
-					</Pressable>
+					<ButtonComponent content="Login" onPressAction={sanitizeFields} loading={loading} />
 
 					<Pressable onPress={() => router.back()}>
 						<Text style={global.secondaryButtonText}>Don’t have an account? Register</Text>
