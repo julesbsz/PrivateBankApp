@@ -2,7 +2,7 @@ import React, { useState, useEffect, createContext } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { loadFonts } from "../../useFonts";
-import PocketBase from "pocketbase";
+import PocketBase, { AsyncAuthStore } from "pocketbase";
 import { Alert } from "react-native";
 import "eventsource-polyfill";
 
@@ -15,7 +15,11 @@ export const AuthContext = createContext({
 	handleLogout: () => {},
 });
 
-const pb = new PocketBase(process.env.POCKETBASE_URL);
+const store = new AsyncAuthStore({
+	save: async (serialized) => AsyncStorage.setItem("pb_auth", serialized),
+	initial: AsyncStorage.getItem("pb_auth"),
+});
+const pb = new PocketBase(process.env.POCKETBASE_URL, store);
 
 export const AuthProvider = ({ children }) => {
 	const [user, setUser] = useState(null);
@@ -40,7 +44,8 @@ export const AuthProvider = ({ children }) => {
 			.create(data)
 			.then((user) => {
 				setUser(user);
-				AsyncStorage.setItem("user", JSON.stringify(user));
+				console.log("storing user token:", user.token, user.record);
+				pb.authStore.save(user.token, user.record);
 				router.replace("(inside)/home");
 			})
 			.catch((err) => {
@@ -59,7 +64,7 @@ export const AuthProvider = ({ children }) => {
 			.authWithPassword(email, password)
 			.then((user) => {
 				setUser(user);
-				AsyncStorage.setItem("user", JSON.stringify(user));
+				pb.authStore.save(user.token, user.record);
 				console.log("user connected:", user);
 				router.replace("(inside)/home");
 			})
@@ -69,34 +74,37 @@ export const AuthProvider = ({ children }) => {
 	};
 
 	const handleLogout = async () => {
-		await AsyncStorage.removeItem("user");
+		pb.authStore.clear();
 		setUser(null);
 		router.replace("(auth)/register");
+	};
+
+	const refreshUserState = async () => {
+		if (pb.authStore.isValid) {
+			const user = await pb.collection("users").authRefresh();
+			setUser(user);
+		} else {
+			pb.authStore.clear();
+
+			await AsyncStorage.getItem("isFirstTime").then((value) => {
+				if (value === "false") {
+					setIsFirstTime(false);
+					router.replace("(auth)/register");
+				} else {
+					setIsFirstTime(true);
+					AsyncStorage.setItem("isFirstTime", "false");
+				}
+			});
+		}
 	};
 
 	const showAlert = (title, message) => Alert.alert(title, message, [{ text: "OK" }]);
 
 	useEffect(() => {
 		const init = async () => {
-			const user = await AsyncStorage.getItem("user");
-			console.log("getting user from localstorage:", user);
-			if (user) {
-				setUser(JSON.parse(user));
-			} else {
-				await AsyncStorage.getItem("isFirstTime").then((value) => {
-					if (value === "false") {
-						setIsFirstTime(false);
-					} else {
-						setIsFirstTime(true);
-						AsyncStorage.setItem("isFirstTime", "false");
-					}
-				});
-			}
-
-			// connect user
-			loadFonts().then(() => {
-				setInitialized(true);
-			});
+			await loadFonts();
+			await refreshUserState();
+			setInitialized(true);
 		};
 
 		init();
@@ -105,21 +113,17 @@ export const AuthProvider = ({ children }) => {
 	useEffect(() => {
 		if (!user) return;
 
-		console.log("subscribing to user collection...");
 		pb.collection("users")
-			.subscribe("2bjd0nstypfbqd7", function (e) {
-				console.log(e.action);
-				console.log(e.record);
-			})
-			.then(() => {
-				console.log("subscribed to user collection");
+			.subscribe(user.record.id, function (e) {
+				if (e.action === "update") setUser(e);
 			})
 			.catch((err) => {
-				console.log("error subscribing to user collection:", err);
+				console.error("[authContext.jsx]: Error while subscribing to user collection ->", err);
+				showAlert("Error", "An error occured while subscribing to user collection.");
 			});
 
 		return () => {
-			pb.collection("users").unsubscribe("2bjd0nstypfbqd7");
+			pb.collection("users").unsubscribe(user.record.id);
 		};
 	}, [user]);
 
