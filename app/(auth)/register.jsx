@@ -21,7 +21,7 @@ const RegisterPage = () => {
 		}
 	}, []);
 
-	const sanitizeFields = () => {
+	const sanitizeFields = async () => {
 		setLoading(true);
 
 		setEmail(email.trim());
@@ -47,7 +47,7 @@ const RegisterPage = () => {
 			return setLoading(false);
 		}
 
-		const success = handleRegister(email, password, confirmedPassword);
+		const success = await handleRegister(email, password, confirmedPassword);
 		if (!success) {
 			setLoading(false);
 		}
