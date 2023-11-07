@@ -3,7 +3,7 @@ import global from "../../assets/style";
 import React, { useContext, useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 import { AuthContext } from "../context/AuthContext";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import ButtonComponent from "../components/Button";
 
 const RegisterPage = () => {
 	const { handleRegister, user } = useContext(AuthContext);
@@ -30,25 +30,27 @@ const RegisterPage = () => {
 
 		if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email)) {
 			Alert.alert("Error", "Invalid email address");
-			return setLoading(false);
+			return;
 		}
 
 		if (password !== confirmedPassword) {
 			setPassword("");
 			setConfirmedPassword("");
 			Alert.alert("Error", "Passwords do not match");
-			return setLoading(false);
+			return;
 		}
 
 		if (password.length < 8) {
 			setPassword("");
 			setConfirmedPassword("");
 			Alert.alert("Error", "Password must be at least 8 characters long");
-			return setLoading(false);
+			return;
 		}
 
-		setLoading(false);
-		return handleRegister(email, password, confirmedPassword);
+		const success = handleRegister(email, password, confirmedPassword);
+		if (!success) {
+			setLoading(false);
+		}
 	};
 
 	return (
@@ -63,15 +65,7 @@ const RegisterPage = () => {
 				</View>
 
 				<View style={styles.buttonsView}>
-					{loading ? (
-						<Pressable style={[global.button, global.buttonShadow]}>
-							<ActivityIndicator size="large" color="#141316" />
-						</Pressable>
-					) : (
-						<Pressable style={[global.button, global.buttonShadow]} onPress={sanitizeFields}>
-							<Text style={[global.text, global.buttonText]}>Register</Text>
-						</Pressable>
-					)}
+					<ButtonComponent content="Register" onPressAction={sanitizeFields} loading={loading} />
 
 					<Pressable onPress={() => router.push("(auth)/login")}>
 						<Text style={global.secondaryButtonText}>Already have an account? Login</Text>
