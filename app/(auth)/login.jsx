@@ -24,7 +24,6 @@ const LoginPage = () => {
 		}
 
 		const success = await handleLogin(email, password);
-		console.log("isConnected:", isConnected);
 		if (!success) {
 			setLoading(false);
 		}
