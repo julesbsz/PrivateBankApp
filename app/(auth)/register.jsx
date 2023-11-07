@@ -3,7 +3,7 @@ import global from "../../assets/style";
 import React, { useContext, useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 import { AuthContext } from "../context/AuthContext";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import ButtonComponent from "../components/Button";
 
 const RegisterPage = () => {
 	const { handleRegister, user } = useContext(AuthContext);
@@ -63,15 +63,7 @@ const RegisterPage = () => {
 				</View>
 
 				<View style={styles.buttonsView}>
-					{loading ? (
-						<Pressable style={[global.button, global.buttonShadow]}>
-							<ActivityIndicator size="large" color="#141316" />
-						</Pressable>
-					) : (
-						<Pressable style={[global.button, global.buttonShadow]} onPress={sanitizeFields}>
-							<Text style={[global.text, global.buttonText]}>Register</Text>
-						</Pressable>
-					)}
+					<ButtonComponent content="Register" onPressAction={sanitizeFields} loading={loading} />
 
 					<Pressable onPress={() => router.push("(auth)/login")}>
 						<Text style={global.secondaryButtonText}>Already have an account? Login</Text>
