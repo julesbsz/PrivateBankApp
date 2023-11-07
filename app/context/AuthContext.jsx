@@ -42,9 +42,16 @@ export const AuthProvider = ({ children }) => {
 		await pb
 			.collection("users")
 			.create(data)
-			.then((user) => {
+			.then(async () => {
+				const user = await pb
+					.collection("users")
+					.authWithPassword(email, password)
+					.catch((err) => {
+						console.error("[authContext.jsx]: Error while logging in user in handleRegister ->", err);
+						showAlert("Error", "An error occured while logging in user.");
+					});
+
 				setUser(user);
-				console.log("storing user token:", user.token, user.record);
 				pb.authStore.save(user.token, user.record);
 				router.replace("(inside)/home");
 			})
