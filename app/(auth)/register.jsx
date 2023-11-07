@@ -30,21 +30,21 @@ const RegisterPage = () => {
 
 		if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email)) {
 			Alert.alert("Error", "Invalid email address");
-			return;
+			return setLoading(false);
 		}
 
 		if (password !== confirmedPassword) {
 			setPassword("");
 			setConfirmedPassword("");
 			Alert.alert("Error", "Passwords do not match");
-			return;
+			return setLoading(false);
 		}
 
 		if (password.length < 8) {
 			setPassword("");
 			setConfirmedPassword("");
 			Alert.alert("Error", "Password must be at least 8 characters long");
-			return;
+			return setLoading(false);
 		}
 
 		const success = handleRegister(email, password, confirmedPassword);
