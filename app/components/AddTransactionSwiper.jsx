@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, Pressable, TextInput } from "react-native";
+import { View, Text, StyleSheet, Pressable, TextInput, Button } from "react-native";
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from "react-native-reanimated";
+import ButtonComponent from "./Button";
 
 const AddTransactionSwiperComponent = () => {
 	const activeTabIndex = useSharedValue(0);
@@ -47,6 +48,10 @@ const AddTransactionSwiperComponent = () => {
 		setAmout(number);
 	};
 
+	const handleOperation = () => {
+		console.log(operation, amout);
+	};
+
 	return (
 		<View style={styles.mainContainer}>
 			<View style={styles.tabsSwitcher}>
@@ -65,12 +70,10 @@ const AddTransactionSwiperComponent = () => {
 				<View style={styles.inputRow}>
 					{operation === "income" ? <Text style={styles.text}>+</Text> : <Text style={styles.text}>-</Text>}
 					<TextInput style={styles.input} onChangeText={onChangeAmount} value={amout} placeholder="AMOUNT" keyboardType="numeric" autoCorrect={false} autoFocus={true} />
-					{amout && <Text style={styles.currency}>$</Text>}
+					{/* {amout && <Text style={styles.currency}>$</Text>} */}
 				</View>
 
-				<Pressable style={[buttonStyle.button, buttonStyle.buttonShadow]}>
-					<Text style={[buttonStyle.text, buttonStyle.buttonText]}>Save</Text>
-				</Pressable>
+				{amout ? <ButtonComponent content={"Save"} onPressAction={handleOperation} /> : <ButtonComponent content={"Save"} disabled={true} />}
 			</View>
 		</View>
 	);
