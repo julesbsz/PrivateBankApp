@@ -11,6 +11,7 @@ export const AuthContext = createContext({
 	user: null,
 	isFirstTime: false,
 	initialized: false,
+	authorizedSpending: 0,
 	handleRegister: () => {},
 	handleLogin: () => {},
 	handleLogout: () => {},
@@ -26,6 +27,7 @@ export const AuthProvider = ({ children }) => {
 	const [user, setUser] = useState(null);
 	const [isFirstTime, setIsFirstTime] = useState(false);
 	const [initialized, setInitialized] = useState(false);
+	const [authorizedSpending, setAuthorizedSpending] = useState(0);
 
 	const router = useRouter();
 
@@ -125,6 +127,8 @@ export const AuthProvider = ({ children }) => {
 	useEffect(() => {
 		if (!user) return;
 
+		setAuthorizedSpending(parseInt(user.record.balance) - parseInt(user.record.savingAmount));
+
 		pb.collection("users")
 			.subscribe(user.record.id, function (e) {
 				if (e.action === "update") setUser(e);
@@ -139,5 +143,5 @@ export const AuthProvider = ({ children }) => {
 		};
 	}, [user]);
 
-	return <AuthContext.Provider value={{ pb, user, isFirstTime, initialized, handleRegister, handleLogin, handleLogout }}>{children}</AuthContext.Provider>;
+	return <AuthContext.Provider value={{ pb, user, isFirstTime, initialized, authorizedSpending, handleRegister, handleLogin, handleLogout }}>{children}</AuthContext.Provider>;
 };
