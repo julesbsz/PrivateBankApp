@@ -3,7 +3,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { OperationProvider } from "./context/OperationContext";
 import { ModalProvider } from "./context/ModalContext";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
+import Toast, { BaseToast } from "react-native-toast-message";
 
 const StackLayout = () => {
 	const toastConfig = {
