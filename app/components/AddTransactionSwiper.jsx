@@ -6,7 +6,7 @@ import { useOperation } from "../context/OperationContext";
 import AlertComponent from "./Alert";
 
 const AddTransactionSwiperComponent = ({ bottomSheetModalRef }) => {
-	const { createIncome } = useOperation();
+	const { createIncome, createExpense } = useOperation();
 
 	const activeTabIndex = useSharedValue(0);
 	const [operation, setOperation] = useState("income");

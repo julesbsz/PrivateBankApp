@@ -14,7 +14,7 @@ export const OperationProvider = ({ children }) => {
 			// register transaction in db
 			const transactionData = {
 				user_id: user.record.id,
-				type: "income",
+				type: "in",
 				amount: amount,
 				date: new Date(),
 				description: null,
@@ -31,11 +31,31 @@ export const OperationProvider = ({ children }) => {
 		}
 	};
 
-	const createExpense = (amount) => {};
+	const createExpense = async (amount) => {
+		try {
+			// register transaction in db
+			const transactionData = {
+				user_id: user.record.id,
+				type: "out",
+				amount: amount,
+				date: new Date(),
+				description: null,
+			};
+			await pb.collection("transactionsHistory").create(transactionData);
+
+			// update balance
+			const newBalance = parseInt(user.record.balance) - parseInt(amount);
+			await pb.collection("users").update(user.record.id, { balance: newBalance });
+
+			return true;
+		} catch (error) {
+			return [false, console.log(error)];
+		}
+	};
 
 	const getBalance = () => {};
 
 	const setBalance = () => {};
 
-	return <OperationContext.Provider value={{ createIncome }}>{children}</OperationContext.Provider>;
+	return <OperationContext.Provider value={{ createIncome, createExpense }}>{children}</OperationContext.Provider>;
 };
