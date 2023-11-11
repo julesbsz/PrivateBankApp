@@ -27,7 +27,7 @@ const HomePage = () => {
 			</View>
 
 			<BottomSheetModal backdropComponent={renderBackdrop} handleIndicatorStyle={{ backgroundColor: "#C9C8C9", width: 60, height: 7 }} backgroundStyle={{ backgroundColor: "#262329" }} ref={bottomSheetModalRef} index={1} snapPoints={snapPoints}>
-				<AddTransactionSwiperComponent />
+				<AddTransactionSwiperComponent bottomSheetModalRef={bottomSheetModalRef} />
 			</BottomSheetModal>
 		</BottomSheetModalProvider>
 	);

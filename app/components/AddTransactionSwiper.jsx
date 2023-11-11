@@ -1,9 +1,14 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet, Pressable, TextInput, Button } from "react-native";
+import React, { useState, useCallback } from "react";
+import { View, Text, StyleSheet, Pressable, TextInput } from "react-native";
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from "react-native-reanimated";
 import ButtonComponent from "./Button";
+import { useOperation } from "../context/OperationContext";
+import { useModal } from "../context/ModalContext";
 
-const AddTransactionSwiperComponent = () => {
+const AddTransactionSwiperComponent = ({ bottomSheetModalRef }) => {
+	const { createIncome } = useOperation();
+	const { handleDismissModal } = useModal();
+
 	const activeTabIndex = useSharedValue(0);
 	const [operation, setOperation] = useState("income");
 	const [amout, setAmout] = useState(null);
@@ -48,8 +53,24 @@ const AddTransactionSwiperComponent = () => {
 		setAmout(number);
 	};
 
+	const handleDismissModalPress = useCallback(() => {
+		bottomSheetModalRef.current?.dismiss();
+	}, [bottomSheetModalRef]);
+
 	const handleOperation = () => {
-		console.log(operation, amout);
+		if (operation === "income") {
+			const success = createIncome(amout);
+
+			if (!success) {
+				// display alert error
+			}
+		}
+
+		if (operation === "expense") {
+			createExpense(amout);
+		}
+
+		handleDismissModalPress();
 	};
 
 	return (
