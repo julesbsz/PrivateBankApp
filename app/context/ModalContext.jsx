@@ -12,6 +12,7 @@ export const ModalProvider = ({ children }) => {
 	}, []);
 
 	const handleDismissModal = useCallback(() => {
+		console.log("dismiss");
 		bottomSheetModalRef.current?.dismiss();
 	}, []);
 

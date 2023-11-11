@@ -7,6 +7,7 @@ import { Alert } from "react-native";
 import "eventsource-polyfill";
 
 export const AuthContext = createContext({
+	pb: null,
 	user: null,
 	isFirstTime: false,
 	initialized: false,
@@ -138,5 +139,5 @@ export const AuthProvider = ({ children }) => {
 		};
 	}, [user]);
 
-	return <AuthContext.Provider value={{ user, isFirstTime, initialized, handleRegister, handleLogin, handleLogout }}>{children}</AuthContext.Provider>;
+	return <AuthContext.Provider value={{ pb, user, isFirstTime, initialized, handleRegister, handleLogin, handleLogout }}>{children}</AuthContext.Provider>;
 };

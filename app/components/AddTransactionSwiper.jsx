@@ -1,9 +1,14 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet, Pressable, TextInput, Button } from "react-native";
+import React, { useState, useCallback } from "react";
+import { View, Text, StyleSheet, Pressable, TextInput } from "react-native";
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from "react-native-reanimated";
 import ButtonComponent from "./Button";
+import { useOperation } from "../context/OperationContext";
+import AlertComponent from "./Alert";
+import ToastComponent from "./Toast";
 
-const AddTransactionSwiperComponent = () => {
+const AddTransactionSwiperComponent = ({ bottomSheetModalRef }) => {
+	const { createOperation } = useOperation();
+
 	const activeTabIndex = useSharedValue(0);
 	const [operation, setOperation] = useState("income");
 	const [amout, setAmout] = useState(null);
@@ -48,8 +53,20 @@ const AddTransactionSwiperComponent = () => {
 		setAmout(number);
 	};
 
-	const handleOperation = () => {
-		console.log(operation, amout);
+	const handleDismissModalPress = useCallback(() => {
+		bottomSheetModalRef.current?.dismiss();
+	}, [bottomSheetModalRef]);
+
+	const handleOperation = async () => {
+		const success = createOperation(operation, amout);
+
+		if (!success) {
+			AlertComponent("Error", `Unable to create your ${operation} operation, please try again later.`, "OK");
+		} else {
+			await ToastComponent("success", `Operation created successfully`);
+		}
+
+		handleDismissModalPress();
 	};
 
 	return (
