@@ -6,7 +6,7 @@ import { useOperation } from "../context/OperationContext";
 import AlertComponent from "./Alert";
 
 const AddTransactionSwiperComponent = ({ bottomSheetModalRef }) => {
-	const { createIncome, createExpense } = useOperation();
+	const { createOperation } = useOperation();
 
 	const activeTabIndex = useSharedValue(0);
 	const [operation, setOperation] = useState("income");
@@ -57,20 +57,10 @@ const AddTransactionSwiperComponent = ({ bottomSheetModalRef }) => {
 	}, [bottomSheetModalRef]);
 
 	const handleOperation = () => {
-		if (operation === "income") {
-			const success = createIncome(amout);
+		const success = createOperation(operation, amout);
 
-			if (!success) {
-				AlertComponent("Error", "Unable to create your income operation, please try again later.", "OK");
-			}
-		}
-
-		if (operation === "expense") {
-			const success = createExpense(amout);
-
-			if (!success) {
-				AlertComponent("Error", "Unable to create your expense operation, please try again later.", "OK");
-			}
+		if (!success) {
+			AlertComponent("Error", `Unable to create your ${operation} operation, please try again later.`, "OK");
 		}
 
 		handleDismissModalPress();

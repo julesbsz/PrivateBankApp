@@ -9,43 +9,27 @@ export const useOperation = () => useContext(OperationContext);
 export const OperationProvider = ({ children }) => {
 	const { pb, user } = useContext(AuthContext);
 
-	const createIncome = async (amount) => {
+	const createOperation = async (type, amount) => {
 		try {
 			// register transaction in db
 			const transactionData = {
 				user_id: user.record.id,
-				type: "in",
-				amount: amount,
+				type,
+				amount,
 				date: new Date(),
 				description: null,
 			};
 			await pb.collection("transactionsHistory").create(transactionData);
 
 			// update balance
-			const newBalance = parseInt(user.record.balance) + parseInt(amount);
-			await pb.collection("users").update(user.record.id, { balance: newBalance });
-
-			return true;
-		} catch (error) {
-			return [false, console.log(error)];
-		}
-	};
-
-	const createExpense = async (amount) => {
-		try {
-			// register transaction in db
-			const transactionData = {
-				user_id: user.record.id,
-				type: "out",
-				amount: amount,
-				date: new Date(),
-				description: null,
-			};
-			await pb.collection("transactionsHistory").create(transactionData);
-
-			// update balance
-			const newBalance = parseInt(user.record.balance) - parseInt(amount);
-			await pb.collection("users").update(user.record.id, { balance: newBalance });
+			if (type === "income") {
+				const newBalance = parseInt(user.record.balance) + parseInt(amount);
+				await pb.collection("users").update(user.record.id, { balance: newBalance });
+			}
+			if (type === "expense") {
+				const newBalance = parseInt(user.record.balance) - parseInt(amount);
+				await pb.collection("users").update(user.record.id, { balance: newBalance });
+			}
 
 			return true;
 		} catch (error) {
@@ -57,5 +41,5 @@ export const OperationProvider = ({ children }) => {
 
 	const setBalance = () => {};
 
-	return <OperationContext.Provider value={{ createIncome, createExpense }}>{children}</OperationContext.Provider>;
+	return <OperationContext.Provider value={{ createOperation }}>{children}</OperationContext.Provider>;
 };
