@@ -2,7 +2,6 @@ import { View, ActivityIndicator, StyleSheet } from "react-native";
 import { useEffect, useContext } from "react";
 import { useRouter } from "expo-router";
 import { AuthContext } from "./context/AuthContext";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const InitialLayout = () => {
 	const { user, isFirstTime, initialized } = useContext(AuthContext);

@@ -4,6 +4,7 @@ import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from "
 import ButtonComponent from "./Button";
 import { useOperation } from "../context/OperationContext";
 import AlertComponent from "./Alert";
+import ToastComponent from "./Toast";
 
 const AddTransactionSwiperComponent = ({ bottomSheetModalRef }) => {
 	const { createOperation } = useOperation();
@@ -56,11 +57,13 @@ const AddTransactionSwiperComponent = ({ bottomSheetModalRef }) => {
 		bottomSheetModalRef.current?.dismiss();
 	}, [bottomSheetModalRef]);
 
-	const handleOperation = () => {
+	const handleOperation = async () => {
 		const success = createOperation(operation, amout);
 
 		if (!success) {
 			AlertComponent("Error", `Unable to create your ${operation} operation, please try again later.`, "OK");
+		} else {
+			await ToastComponent("success", `Operation created successfully.`);
 		}
 
 		handleDismissModalPress();
