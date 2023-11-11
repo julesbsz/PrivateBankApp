@@ -63,7 +63,7 @@ const AddTransactionSwiperComponent = ({ bottomSheetModalRef }) => {
 		if (!success) {
 			AlertComponent("Error", `Unable to create your ${operation} operation, please try again later.`, "OK");
 		} else {
-			await ToastComponent("success", `Operation created successfully.`);
+			await ToastComponent("success", `Operation created successfully`);
 		}
 
 		handleDismissModalPress();
