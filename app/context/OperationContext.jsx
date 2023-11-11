@@ -19,7 +19,7 @@ export const OperationProvider = ({ children }) => {
 				date: new Date(),
 				description: null,
 			};
-			await pb.collection("transactionHistory").create(transactionData);
+			await pb.collection("transactionsHistory").create(transactionData);
 
 			// update balance
 			const newBalance = parseInt(user.record.balance) + parseInt(amount);
