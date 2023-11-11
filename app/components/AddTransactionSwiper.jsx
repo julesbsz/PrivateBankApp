@@ -3,11 +3,10 @@ import { View, Text, StyleSheet, Pressable, TextInput } from "react-native";
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from "react-native-reanimated";
 import ButtonComponent from "./Button";
 import { useOperation } from "../context/OperationContext";
-import { useModal } from "../context/ModalContext";
+import AlertComponent from "./Alert";
 
 const AddTransactionSwiperComponent = ({ bottomSheetModalRef }) => {
 	const { createIncome } = useOperation();
-	const { handleDismissModal } = useModal();
 
 	const activeTabIndex = useSharedValue(0);
 	const [operation, setOperation] = useState("income");
@@ -62,12 +61,16 @@ const AddTransactionSwiperComponent = ({ bottomSheetModalRef }) => {
 			const success = createIncome(amout);
 
 			if (!success) {
-				// display alert error
+				AlertComponent("Error", "Unable to create your income operation, please try again later.", "OK");
 			}
 		}
 
 		if (operation === "expense") {
-			createExpense(amout);
+			const success = createExpense(amout);
+
+			if (!success) {
+				AlertComponent("Error", "Unable to create your expense operation, please try again later.", "OK");
+			}
 		}
 
 		handleDismissModalPress();
