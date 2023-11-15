@@ -1,26 +1,9 @@
 import { View, ActivityIndicator, StyleSheet } from "react-native";
-import { useEffect, useContext } from "react";
-import { useRouter } from "expo-router";
+import { useContext } from "react";
 import { AuthContext } from "./context/AuthContext";
 
 const InitialLayout = () => {
-	const { user, isFirstTime, initialized } = useContext(AuthContext);
-
-	const router = useRouter();
-
-	useEffect(() => {
-		if (!initialized) return;
-
-		if (user) {
-			router.replace("(inside)/home");
-		} else {
-			if (isFirstTime) {
-				router.replace("onboarding");
-			} else {
-				router.replace("(auth)/register");
-			}
-		}
-	}, [initialized, user]);
+	const { initialized } = useContext(AuthContext);
 
 	if (!initialized) {
 		return (

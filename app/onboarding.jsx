@@ -1,8 +1,16 @@
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import Cards from "../assets/svg/cards.jsx";
 import global from "../assets/style.jsx";
+import ButtonComponent from "./components/Button.jsx";
+import { useRouter } from "expo-router";
 
 const Onboarding = () => {
+	const router = useRouter();
+
+	const handleBeginNow = () => {
+		router.push("(auth)/register");
+	}
+
 	return (
 		<View style={styles.container}>
 			<View style={styles.innerContainer}>
@@ -12,9 +20,7 @@ const Onboarding = () => {
 				</Text>
 			</View>
 
-			<Pressable style={[global.button, global.buttonShadow]} onPress={() => {}}>
-				<Text style={[global.text, global.buttonText]}>Begin Now</Text>
-			</Pressable>
+			<ButtonComponent content="Begin Now" onPressAction={handleBeginNow} />
 		</View>
 	);
 };
