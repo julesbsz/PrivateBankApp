@@ -107,6 +107,7 @@ export const AuthProvider = ({ children }) => {
 				} else {
 					setIsFirstTime(true);
 					AsyncStorage.setItem("isFirstTime", "false");
+					router.replace("onboarding");
 				}
 			});
 		}
