@@ -33,7 +33,7 @@ const RegisterPage = () => {
 			return setLoading(false);
 		}
 
-		if (password !== confirmedPassword) {
+		if (password.trim() !== confirmedPassword.trim()) {
 			setPassword("");
 			setConfirmedPassword("");
 			Alert.alert("Error", "Passwords do not match");

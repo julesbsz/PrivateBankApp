@@ -100,17 +100,27 @@ export const AuthProvider = ({ children }) => {
 		} else {
 			pb.authStore.clear();
 
-			await AsyncStorage.getItem("isFirstTime").then((value) => {
-				if (value === "false") {
-					setIsFirstTime(false);
-					router.replace("(auth)/register");
-				} else {
-					setIsFirstTime(true);
-					AsyncStorage.setItem("isFirstTime", "false");
-					router.replace("onboarding");
-				}
-			});
+			await AsyncStorage.getItem("isFirstTime")
+				.then((value) => {
+					if (value === "false") {
+						setIsFirstTime(false);
+						router.replace("(auth)/register");
+					} else {
+						setIsFirstTime(true);
+						AsyncStorage.setItem("isFirstTime", "false");
+						router.replace("onboarding");
+					}
+				})
+				.catch((err) => {
+					console.error("[authContext.jsx]: Error while getting isFirstTime from AsyncStorage ->", err);
+					showAlert("Error", "An error occured while getting isFirstTime from AsyncStorage.");
+				});
 		}
+	};
+
+	const getTransactionsHistory = async () => {
+		const transactions = pb.collection("transactionsHistory").where("user_id", "==", user.record.id).orderBy("date", "desc");
+		return console.log("transactions history:", transactions);
 	};
 
 	const showAlert = (title, message) => Alert.alert(title, message, [{ text: "OK" }]);
@@ -129,6 +139,7 @@ export const AuthProvider = ({ children }) => {
 		if (!user) return;
 
 		setAuthorizedSpending(parseInt(user.record.balance) - parseInt(user.record.savingAmount));
+		// async() => {getTransactionsHistory()}
 
 		pb.collection("users")
 			.subscribe(user.record.id, function (e) {
