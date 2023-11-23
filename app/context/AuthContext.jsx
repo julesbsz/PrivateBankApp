@@ -97,6 +97,7 @@ export const AuthProvider = ({ children }) => {
 		if (pb.authStore.isValid) {
 			const user = await pb.collection("users").authRefresh();
 			setUser(user);
+			router.replace("(inside)/home");
 		} else {
 			pb.authStore.clear();
 
