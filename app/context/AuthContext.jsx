@@ -12,6 +12,7 @@ export const AuthContext = createContext({
 	isFirstTime: false,
 	initialized: false,
 	authorizedSpending: 0,
+	transactionsHistory: [],
 	handleRegister: () => {},
 	handleLogin: () => {},
 	handleLogout: () => {},
@@ -28,6 +29,7 @@ export const AuthProvider = ({ children }) => {
 	const [isFirstTime, setIsFirstTime] = useState(false);
 	const [initialized, setInitialized] = useState(false);
 	const [authorizedSpending, setAuthorizedSpending] = useState(0);
+	const [transactionsHistory, setTransactionsHistory] = useState([]);
 
 	const router = useRouter();
 
@@ -120,8 +122,8 @@ export const AuthProvider = ({ children }) => {
 	};
 
 	const getTransactionsHistory = async () => {
-		const transactions = pb.collection("transactionsHistory").where("user_id", "==", user.record.id).orderBy("date", "desc");
-		return console.log("transactions history:", transactions);
+		const transactions = await pb.collection("transactionsHistory").getList(1, 10, { userId: user.record.id });
+		setTransactionsHistory(transactions);
 	};
 
 	const showAlert = (title, message) => Alert.alert(title, message, [{ text: "OK" }]);
@@ -140,7 +142,7 @@ export const AuthProvider = ({ children }) => {
 		if (!user) return;
 
 		setAuthorizedSpending(parseInt(user.record.balance) - parseInt(user.record.savingAmount));
-		// async() => {getTransactionsHistory()}
+		getTransactionsHistory();
 
 		pb.collection("users")
 			.subscribe(user.record.id, function (e) {
@@ -156,5 +158,5 @@ export const AuthProvider = ({ children }) => {
 		};
 	}, [user]);
 
-	return <AuthContext.Provider value={{ pb, user, isFirstTime, initialized, authorizedSpending, handleRegister, handleLogin, handleLogout }}>{children}</AuthContext.Provider>;
+	return <AuthContext.Provider value={{ pb, user, isFirstTime, initialized, authorizedSpending, transactionsHistory, handleRegister, handleLogin, handleLogout }}>{children}</AuthContext.Provider>;
 };
