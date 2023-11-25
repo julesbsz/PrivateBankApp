@@ -122,7 +122,7 @@ export const AuthProvider = ({ children }) => {
 	};
 
 	const getTransactionsHistory = async () => {
-		const transactions = await pb.collection("transactionsHistory").getList(1, 10, { userId: user.record.id });
+		const transactions = await pb.collection("transactionsHistory").getList(1, 10, { userId: user.record.id, sort: "-date" });
 		setTransactionsHistory(transactions);
 	};
 

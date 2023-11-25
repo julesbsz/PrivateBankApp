@@ -1,14 +1,18 @@
 import { View, Text, StyleSheet, Pressable } from "react-native";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import OperationItemComponent from "./OperationItem";
 
 const TransactionsListComponent = () => {
 	const { transactionsHistory } = useContext(AuthContext);
+	const [initialized, setInitialized] = useState(false);
 
 	useEffect(() => {
-		console.log(transactionsHistory.items);
-	});
+		if (transactionsHistory) {
+			setInitialized(true);
+			console.log(transactionsHistory.items);
+		}
+	}, [transactionsHistory]);
 
 	return (
 		<View style={styles.container}>
@@ -19,7 +23,17 @@ const TransactionsListComponent = () => {
 				</Pressable>
 			</View>
 
-			<View style={styles.list}>{transactionsHistory.items && transactionsHistory.items.map((transaction, index) => <OperationItemComponent key={index} title={transaction.title} date={transaction.date} amount={transaction.amount} type={transaction.type} />)}</View>
+			{initialized && transactionsHistory.items && transactionsHistory.items.length > 0 ? (
+				<View style={styles.list}>
+					{transactionsHistory.items.map((transaction, index) => (
+						<OperationItemComponent key={index} description={transaction.description} date={transaction.date} amount={transaction.amount} type={transaction.type} />
+					))}
+				</View>
+			) : (
+				<View style={{ marginTop: 20 }}>
+					<Text style={{ color: "white", fontSize: 16, fontWeight: "semibold" }}>Pas de transactions pour le moment</Text>
+				</View>
+			)}
 		</View>
 	);
 };

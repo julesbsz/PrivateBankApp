@@ -82,7 +82,7 @@ const AddTransactionSwiperComponent = ({ bottomSheetModalRef, updateSnapPoints }
 		scrollRef.current?.setPage(1);
 		setTimeout(() => {
 			updateSnapPoints(["90%", "90%"]);
-		}, 300);
+		}, 500);
 	};
 
 	return (
