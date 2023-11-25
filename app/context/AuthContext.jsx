@@ -12,6 +12,7 @@ export const AuthContext = createContext({
 	isFirstTime: false,
 	initialized: false,
 	authorizedSpending: 0,
+	transactionsHistory: [],
 	handleRegister: () => {},
 	handleLogin: () => {},
 	handleLogout: () => {},
@@ -28,6 +29,7 @@ export const AuthProvider = ({ children }) => {
 	const [isFirstTime, setIsFirstTime] = useState(false);
 	const [initialized, setInitialized] = useState(false);
 	const [authorizedSpending, setAuthorizedSpending] = useState(0);
+	const [transactionsHistory, setTransactionsHistory] = useState([]);
 
 	const router = useRouter();
 
@@ -97,20 +99,31 @@ export const AuthProvider = ({ children }) => {
 		if (pb.authStore.isValid) {
 			const user = await pb.collection("users").authRefresh();
 			setUser(user);
+			router.replace("(inside)/home");
 		} else {
 			pb.authStore.clear();
 
-			await AsyncStorage.getItem("isFirstTime").then((value) => {
-				if (value === "false") {
-					setIsFirstTime(false);
-					router.replace("(auth)/register");
-				} else {
-					setIsFirstTime(true);
-					AsyncStorage.setItem("isFirstTime", "false");
-					router.replace("onboarding");
-				}
-			});
+			await AsyncStorage.getItem("isFirstTime")
+				.then((value) => {
+					if (value === "false") {
+						setIsFirstTime(false);
+						router.replace("(auth)/register");
+					} else {
+						setIsFirstTime(true);
+						AsyncStorage.setItem("isFirstTime", "false");
+						router.replace("onboarding");
+					}
+				})
+				.catch((err) => {
+					console.error("[authContext.jsx]: Error while getting isFirstTime from AsyncStorage ->", err);
+					showAlert("Error", "An error occured while getting isFirstTime from AsyncStorage.");
+				});
 		}
+	};
+
+	const getTransactionsHistory = async () => {
+		const transactions = await pb.collection("transactionsHistory").getList(1, 10, { userId: user.record.id });
+		setTransactionsHistory(transactions);
 	};
 
 	const showAlert = (title, message) => Alert.alert(title, message, [{ text: "OK" }]);
@@ -129,6 +142,7 @@ export const AuthProvider = ({ children }) => {
 		if (!user) return;
 
 		setAuthorizedSpending(parseInt(user.record.balance) - parseInt(user.record.savingAmount));
+		getTransactionsHistory();
 
 		pb.collection("users")
 			.subscribe(user.record.id, function (e) {
@@ -144,5 +158,5 @@ export const AuthProvider = ({ children }) => {
 		};
 	}, [user]);
 
-	return <AuthContext.Provider value={{ pb, user, isFirstTime, initialized, authorizedSpending, handleRegister, handleLogin, handleLogout }}>{children}</AuthContext.Provider>;
+	return <AuthContext.Provider value={{ pb, user, isFirstTime, initialized, authorizedSpending, transactionsHistory, handleRegister, handleLogin, handleLogout }}>{children}</AuthContext.Provider>;
 };
