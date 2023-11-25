@@ -7,6 +7,7 @@ import { BottomSheetModal, BottomSheetModalProvider, BottomSheetBackdrop } from 
 import CardComponent from "../components/Card";
 import AddTransactionComponent from "../components/AddTransactionButton";
 import AddTransactionSwiperComponent from "../components/AddTransactionSwiper";
+import TransactionsListComponent from "../components/TransactionsList";
 
 const HomePage = () => {
 	const bottomSheetModalRef = useRef(null);
@@ -20,6 +21,8 @@ const HomePage = () => {
 		<BottomSheetModalProvider>
 			<View style={styles.container}>
 				<CardComponent />
+
+				<TransactionsListComponent />
 
 				<View style={styles.containerTransactionBtn}>
 					<AddTransactionComponent bottomSheetModalRef={bottomSheetModalRef} />
@@ -37,15 +40,16 @@ const styles = StyleSheet.create({
 	container: {
 		paddingTop: 20,
 		paddingBottom: 50,
-		paddingLeft: 10,
-		paddingRight: 10,
+		paddingLeft: 20,
+		paddingRight: 20,
 		height: "100%",
 		width: "100%",
 		display: "flex",
 		flexDirection: "column",
 		alignItems: "center",
-		justifyContent: "space-between",
+		justifyContent: "flex-start",
 		backgroundColor: "#141316",
+		gap: 40,
 	},
 	innerContainer: {
 		display: "flex",
