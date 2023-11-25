@@ -1,6 +1,8 @@
 import React, { useState, useCallback } from "react";
 import { View, Text, StyleSheet, Pressable, TextInput } from "react-native";
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from "react-native-reanimated";
+import PagerView from "react-native-pager-view";
+
 import ButtonComponent from "./Button";
 import { useOperation } from "../context/OperationContext";
 import AlertComponent from "./Alert";
@@ -70,29 +72,35 @@ const AddTransactionSwiperComponent = ({ bottomSheetModalRef }) => {
 	};
 
 	return (
-		<View style={styles.mainContainer}>
-			<View style={styles.tabsSwitcher}>
-				<Animated.View style={[styles.tabIndicator, animatedIndicatorStyle]} />
+		<PagerView style={{ flex: 1 }} initialPage={0}>
+			<View style={styles.mainContainer} key="1">
+				<View style={styles.tabsSwitcher}>
+					<Animated.View style={[styles.tabIndicator, animatedIndicatorStyle]} />
 
-				<Pressable style={styles.tabItem} onPress={() => handleTabPress(0)}>
-					<Animated.Text style={[styles.tabItemText, animatedIncomeTextStyle]}>Income</Animated.Text>
-				</Pressable>
+					<Pressable style={styles.tabItem} onPress={() => handleTabPress(0)}>
+						<Animated.Text style={[styles.tabItemText, animatedIncomeTextStyle]}>Income</Animated.Text>
+					</Pressable>
 
-				<Pressable style={styles.tabItem} onPress={() => handleTabPress(1)}>
-					<Animated.Text style={[styles.tabItemText, animatedExpenseTextStyle]}>Expense</Animated.Text>
-				</Pressable>
-			</View>
-
-			<View style={styles.pagerView}>
-				<View style={styles.inputRow}>
-					{operation === "income" ? <Text style={styles.text}>+</Text> : <Text style={styles.text}>-</Text>}
-					<TextInput style={styles.input} onChangeText={onChangeAmount} value={amout} placeholder="AMOUNT" keyboardType="numeric" autoCorrect={false} autoFocus={true} />
-					{/* {amout && <Text style={styles.currency}>$</Text>} */}
+					<Pressable style={styles.tabItem} onPress={() => handleTabPress(1)}>
+						<Animated.Text style={[styles.tabItemText, animatedExpenseTextStyle]}>Expense</Animated.Text>
+					</Pressable>
 				</View>
 
-				{amout ? <ButtonComponent content={"Save"} onPressAction={handleOperation} /> : <ButtonComponent content={"Save"} disabled={true} />}
+				<View style={styles.pagerView}>
+					<View style={styles.inputRow}>
+						{operation === "income" ? <Text style={styles.text}>+</Text> : <Text style={styles.text}>-</Text>}
+						<TextInput style={styles.input} onChangeText={onChangeAmount} value={amout} placeholder="AMOUNT" keyboardType="numeric" autoCorrect={false} autoFocus={true} />
+						{/* {amout && <Text style={styles.currency}>$</Text>} */}
+					</View>
+
+					{amout ? <ButtonComponent content={"Save"} onPressAction={handleOperation} /> : <ButtonComponent content={"Next"} disabled={true} />}
+				</View>
 			</View>
-		</View>
+
+			<View style={styles.mainContainer} key="2">
+				<Text>Second page</Text>
+			</View>
+		</PagerView>
 	);
 };
 
