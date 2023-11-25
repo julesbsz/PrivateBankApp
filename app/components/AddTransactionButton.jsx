@@ -2,8 +2,9 @@ import React, { useCallback } from "react";
 import { View, StyleSheet, Pressable, Text } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 
-const AddTransactionComponent = ({ bottomSheetModalRef }) => {
+const AddTransactionComponent = ({ bottomSheetModalRef, updateSnapPoints }) => {
 	const handlePresentModalPress = useCallback(() => {
+		updateSnapPoints(["75%", "75%"]);
 		bottomSheetModalRef.current?.present();
 	}, [bottomSheetModalRef]);
 

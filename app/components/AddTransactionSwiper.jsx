@@ -2,18 +2,21 @@ import React, { useState, useCallback } from "react";
 import { View, Text, StyleSheet, Pressable, TextInput } from "react-native";
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from "react-native-reanimated";
 import PagerView from "react-native-pager-view";
+import { Entypo } from "@expo/vector-icons";
 
 import ButtonComponent from "./Button";
 import { useOperation } from "../context/OperationContext";
 import AlertComponent from "./Alert";
 import ToastComponent from "./Toast";
 
-const AddTransactionSwiperComponent = ({ bottomSheetModalRef }) => {
+const AddTransactionSwiperComponent = ({ bottomSheetModalRef, updateSnapPoints }) => {
 	const { createOperation } = useOperation();
+	const scrollRef = React.useRef(null);
 
 	const activeTabIndex = useSharedValue(0);
 	const [operation, setOperation] = useState("income");
 	const [amout, setAmout] = useState(null);
+	const [description, setDescription] = useState(null);
 
 	const handleTabPress = (tabIndex) => {
 		activeTabIndex.value = tabIndex;
@@ -55,12 +58,16 @@ const AddTransactionSwiperComponent = ({ bottomSheetModalRef }) => {
 		setAmout(number);
 	};
 
+	const onChangeDescription = (text) => {
+		setDescription(text);
+	};
+
 	const handleDismissModalPress = useCallback(() => {
 		bottomSheetModalRef.current?.dismiss();
 	}, [bottomSheetModalRef]);
 
 	const handleOperation = async () => {
-		const success = createOperation(operation, amout);
+		const success = createOperation(operation, amout, description);
 
 		if (!success) {
 			AlertComponent("Error", `Unable to create your ${operation} operation, please try again later.`, "OK");
@@ -71,8 +78,15 @@ const AddTransactionSwiperComponent = ({ bottomSheetModalRef }) => {
 		handleDismissModalPress();
 	};
 
+	const handleNextPress = () => {
+		scrollRef.current?.setPage(1);
+		setTimeout(() => {
+			updateSnapPoints(["90%", "90%"]);
+		}, 300);
+	};
+
 	return (
-		<PagerView style={{ flex: 1 }} initialPage={0}>
+		<PagerView style={{ flex: 1 }} initialPage={0} scrollEnabled={false} ref={scrollRef}>
 			<View style={styles.mainContainer} key="1">
 				<View style={styles.tabsSwitcher}>
 					<Animated.View style={[styles.tabIndicator, animatedIndicatorStyle]} />
@@ -93,12 +107,22 @@ const AddTransactionSwiperComponent = ({ bottomSheetModalRef }) => {
 						{/* {amout && <Text style={styles.currency}>$</Text>} */}
 					</View>
 
-					{amout ? <ButtonComponent content={"Save"} onPressAction={handleOperation} /> : <ButtonComponent content={"Next"} disabled={true} />}
+					{amout ? <ButtonComponent content={"Next"} onPressAction={handleNextPress} /> : <ButtonComponent content={"Next"} disabled={true} />}
 				</View>
 			</View>
 
-			<View style={styles.mainContainer} key="2">
-				<Text>Second page</Text>
+			<View key="2" style={[styles.mainContainer, { gap: 20 }]}>
+				<View style={styles.iconPickerContainer}>
+					<Pressable style={styles.iconPicker}>
+						<Entypo name="plus" size={38} color="white" />
+					</Pressable>
+				</View>
+
+				<View style={styles.inputRow}>
+					<TextInput style={styles.input} onChangeText={onChangeDescription} value={description} placeholder="DESCRIPTION" autoCorrect={false} autoFocus={true} />
+				</View>
+
+				{description ? <ButtonComponent content={"Save"} onPressAction={handleOperation} /> : <ButtonComponent content={"Save"} disabled={true} />}
 			</View>
 		</PagerView>
 	);
@@ -110,7 +134,7 @@ const styles = StyleSheet.create({
 		display: "flex",
 		flexDirection: "column",
 		alignItems: "center",
-		justifyContent: "center",
+		// justifyContent: "center",
 	},
 	tabsSwitcher: {
 		display: "flex",
@@ -170,6 +194,24 @@ const styles = StyleSheet.create({
 		fontFamily: "SpaceGrotesk",
 		fontSize: 50,
 		color: "white",
+	},
+	iconPickerContainer: {
+		width: "100%",
+		height: "auto",
+		display: "flex",
+		flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "center",
+	},
+	iconPicker: {
+		backgroundColor: "#141316",
+		width: 150,
+		height: 150,
+		borderRadius: 100,
+		display: "flex",
+		flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "center",
 	},
 });
 

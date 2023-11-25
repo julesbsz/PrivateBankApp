@@ -9,7 +9,7 @@ export const useOperation = () => useContext(OperationContext);
 export const OperationProvider = ({ children }) => {
 	const { pb, user } = useContext(AuthContext);
 
-	const createOperation = async (type, amount) => {
+	const createOperation = async (type, amount, description) => {
 		try {
 			// register transaction in db
 			const transactionData = {
@@ -17,7 +17,7 @@ export const OperationProvider = ({ children }) => {
 				type,
 				amount,
 				date: new Date(),
-				description: null,
+				description,
 			};
 			await pb.collection("transactionsHistory").create(transactionData);
 
