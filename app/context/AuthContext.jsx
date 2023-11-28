@@ -98,6 +98,7 @@ export const AuthProvider = ({ children }) => {
 	const refreshUserState = async () => {
 		if (pb.authStore.isValid) {
 			const user = await pb.collection("users").authRefresh();
+			console.log("user amount:", user.record.balance);
 			setUser(user);
 			router.replace("(inside)/home");
 		} else {

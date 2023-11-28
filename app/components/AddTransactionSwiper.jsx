@@ -79,6 +79,12 @@ const AddTransactionSwiperComponent = ({ bottomSheetModalRef, updateSnapPoints }
 	};
 
 	const handleNextPress = () => {
+		if (!amount) return;
+
+		if (amount.endsWith(".")) {
+			setAmount(amount.slice(0, -1));
+		}
+
 		scrollRef.current?.setPage(1);
 		setTimeout(() => {
 			updateSnapPoints(["90%", "90%"]);
@@ -98,7 +104,6 @@ const AddTransactionSwiperComponent = ({ bottomSheetModalRef, updateSnapPoints }
 			amount = `${interger}.${decimal.substring(0, 2)}`;
 		}
 
-		console.log("formated amount:", amount);
 		return amount;
 	}
 
