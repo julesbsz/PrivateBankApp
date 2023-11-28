@@ -10,7 +10,6 @@ const TransactionsListComponent = () => {
 	useEffect(() => {
 		if (transactionsHistory) {
 			setInitialized(true);
-			console.log(transactionsHistory.items);
 		}
 	}, [transactionsHistory]);
 
