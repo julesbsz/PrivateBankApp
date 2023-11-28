@@ -98,6 +98,7 @@ export const AuthProvider = ({ children }) => {
 	const refreshUserState = async () => {
 		if (pb.authStore.isValid) {
 			const user = await pb.collection("users").authRefresh();
+			console.log("user amount:", user.record.balance);
 			setUser(user);
 			router.replace("(inside)/home");
 		} else {
@@ -122,7 +123,7 @@ export const AuthProvider = ({ children }) => {
 	};
 
 	const getTransactionsHistory = async () => {
-		const transactions = await pb.collection("transactionsHistory").getList(1, 10, { userId: user.record.id });
+		const transactions = await pb.collection("transactionsHistory").getList(1, 10, { userId: user.record.id, sort: "-date" });
 		setTransactionsHistory(transactions);
 	};
 

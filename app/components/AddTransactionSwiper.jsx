@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { View, Text, StyleSheet, Pressable, TextInput } from "react-native";
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from "react-native-reanimated";
 import PagerView from "react-native-pager-view";
@@ -15,7 +15,7 @@ const AddTransactionSwiperComponent = ({ bottomSheetModalRef, updateSnapPoints }
 
 	const activeTabIndex = useSharedValue(0);
 	const [operation, setOperation] = useState("income");
-	const [amout, setAmout] = useState(null);
+	const [amount, setAmount] = useState(null);
 	const [description, setDescription] = useState(null);
 
 	const handleTabPress = (tabIndex) => {
@@ -55,7 +55,7 @@ const AddTransactionSwiperComponent = ({ bottomSheetModalRef, updateSnapPoints }
 	});
 
 	const onChangeAmount = (number) => {
-		setAmout(number);
+		setAmount(number);
 	};
 
 	const onChangeDescription = (text) => {
@@ -67,7 +67,7 @@ const AddTransactionSwiperComponent = ({ bottomSheetModalRef, updateSnapPoints }
 	}, [bottomSheetModalRef]);
 
 	const handleOperation = async () => {
-		const success = createOperation(operation, amout, description);
+		const success = createOperation(operation, amount, description);
 
 		if (!success) {
 			AlertComponent("Error", `Unable to create your ${operation} operation, please try again later.`, "OK");
@@ -79,11 +79,39 @@ const AddTransactionSwiperComponent = ({ bottomSheetModalRef, updateSnapPoints }
 	};
 
 	const handleNextPress = () => {
+		if (!amount) return;
+
+		if (amount.endsWith(".")) {
+			setAmount(amount.slice(0, -1));
+		}
+
 		scrollRef.current?.setPage(1);
 		setTimeout(() => {
 			updateSnapPoints(["90%", "90%"]);
-		}, 300);
+		}, 500);
 	};
+
+	function validateAndFormatAmount(amount) {
+		amount = amount.replace(/,/g, ".");
+
+		const parts = amount.split(".");
+		amount = parts.length > 1 ? `${parts[0]}.${parts.slice(1).join("")}` : amount;
+
+		amount = amount.replace(/[^0-9.]/g, "");
+
+		if (amount.includes(".")) {
+			const [interger, decimal] = amount.split(".");
+			amount = `${interger}.${decimal.substring(0, 2)}`;
+		}
+
+		return amount;
+	}
+
+	useEffect(() => {
+		if (amount) {
+			setAmount(validateAndFormatAmount(amount));
+		}
+	}, [amount]);
 
 	return (
 		<PagerView style={{ flex: 1 }} initialPage={0} scrollEnabled={false} ref={scrollRef}>
@@ -103,11 +131,11 @@ const AddTransactionSwiperComponent = ({ bottomSheetModalRef, updateSnapPoints }
 				<View style={styles.pagerView}>
 					<View style={styles.inputRow}>
 						{operation === "income" ? <Text style={styles.text}>+</Text> : <Text style={styles.text}>-</Text>}
-						<TextInput style={styles.input} onChangeText={onChangeAmount} value={amout} placeholder="AMOUNT" keyboardType="numeric" autoCorrect={false} autoFocus={true} />
-						{/* {amout && <Text style={styles.currency}>$</Text>} */}
+						<TextInput style={styles.input} onChangeText={onChangeAmount} value={amount} placeholder="AMOUNT" keyboardType="numeric" autoCorrect={false} autoFocus={true} />
+						{/* {amount && <Text style={styles.currency}>$</Text>} */}
 					</View>
 
-					{amout ? <ButtonComponent content={"Next"} onPressAction={handleNextPress} /> : <ButtonComponent content={"Next"} disabled={true} />}
+					{amount ? <ButtonComponent content={"Next"} onPressAction={handleNextPress} /> : <ButtonComponent content={"Next"} disabled={true} />}
 				</View>
 			</View>
 

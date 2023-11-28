@@ -23,11 +23,11 @@ export const OperationProvider = ({ children }) => {
 
 			// update balance
 			if (type === "income") {
-				const newBalance = parseInt(user.record.balance) + parseInt(amount);
+				const newBalance = parseInt(user.record.balance) + amount;
 				await pb.collection("users").update(user.record.id, { balance: newBalance });
 			}
 			if (type === "expense") {
-				const newBalance = parseInt(user.record.balance) - parseInt(amount);
+				const newBalance = parseInt(user.record.balance) - amount;
 				await pb.collection("users").update(user.record.id, { balance: newBalance });
 			}
 
