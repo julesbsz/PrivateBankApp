@@ -16,19 +16,18 @@ export const OperationProvider = ({ children }) => {
 				user_id: user.record.id,
 				type,
 				amount,
-				date: new Date(),
 				description,
 			};
 			await pb.collection("transactionsHistory").create(transactionData);
 
 			// update balance
 			if (type === "income") {
-				const newBalance = parseInt(user.record.balance) + amount;
-				await pb.collection("users").update(user.record.id, { balance: newBalance });
+				const newBalance = Number(user.record.balance) + Number(amount);
+				await pb.collection("users").update(user.record.id, { balance: Number(newBalance) });
 			}
 			if (type === "expense") {
-				const newBalance = parseInt(user.record.balance) - amount;
-				await pb.collection("users").update(user.record.id, { balance: newBalance });
+				const newBalance = Number(user.record.balance) - Number(amount);
+				await pb.collection("users").update(user.record.id, { balance: Number(newBalance) });
 			}
 
 			return true;

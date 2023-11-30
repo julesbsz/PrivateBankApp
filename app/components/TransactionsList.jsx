@@ -25,7 +25,7 @@ const TransactionsListComponent = () => {
 			{initialized && transactionsHistory.items && transactionsHistory.items.length > 0 ? (
 				<View style={styles.list}>
 					{transactionsHistory.items.map((transaction, index) => (
-						<OperationItemComponent key={index} description={transaction.description} date={transaction.date} amount={transaction.amount} type={transaction.type} />
+						<OperationItemComponent key={index} description={transaction.description} date={transaction.created} amount={transaction.amount} type={transaction.type} />
 					))}
 				</View>
 			) : (
