@@ -1,8 +1,8 @@
 {
 	"expo": {
-		"name": "PrivateBank",
+		"name": "Private Bank",
 		"slug": "PrivateBank",
-		"version": "1.0.0",
+		"version": "0.1.0",
 		"scheme": "privatebank",
 		"orientation": "portrait",
 		"icon": "./assets/icon.png",
@@ -10,7 +10,7 @@
 		"splash": {
 			"image": "./assets/splash.png",
 			"resizeMode": "contain",
-			"backgroundColor": "#ffffff"
+			"backgroundColor": "#25232A"
 		},
 		"assetBundlePatterns": ["**/*"],
 		"ios": {
@@ -19,7 +19,7 @@
 		"android": {
 			"adaptiveIcon": {
 				"foregroundImage": "./assets/adaptive-icon.png",
-				"backgroundColor": "#ffffff"
+				"backgroundColor": "#25232A"
 			}
 		},
 		"web": {
