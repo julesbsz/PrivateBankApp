@@ -15,8 +15,10 @@ const AddTransactionSwiperComponent = ({ bottomSheetModalRef, updateSnapPoints }
 
 	const activeTabIndex = useSharedValue(0);
 	const [operation, setOperation] = useState("income");
-	const [amount, setAmount] = useState(null);
 	const [description, setDescription] = useState(null);
+
+	const [amount, setAmount] = useState(null);
+	const [amountParsed, setAmountParsed] = useState(null);
 
 	const handleTabPress = (tabIndex) => {
 		activeTabIndex.value = tabIndex;
@@ -67,7 +69,7 @@ const AddTransactionSwiperComponent = ({ bottomSheetModalRef, updateSnapPoints }
 	}, [bottomSheetModalRef]);
 
 	const handleOperation = async () => {
-		const success = createOperation(operation, amount, description);
+		const success = createOperation(operation, amountParsed, description);
 
 		if (!success) {
 			AlertComponent("Error", `Unable to create your ${operation} operation, please try again later.`, "OK");
@@ -81,9 +83,20 @@ const AddTransactionSwiperComponent = ({ bottomSheetModalRef, updateSnapPoints }
 	const handleNextPress = () => {
 		if (!amount) return;
 
-		if (amount.endsWith(".")) {
-			setAmount(amount.slice(0, -1));
+		let processedAmount = amount;
+
+		if (processedAmount.startsWith(".")) {
+			processedAmount = "0" + processedAmount;
 		}
+
+		processedAmount = Number(processedAmount);
+
+		if (isNaN(processedAmount)) {
+			AlertComponent("Error", "Please enter a valid amount.", "OK");
+			return;
+		}
+
+		setAmountParsed(processedAmount);
 
 		scrollRef.current?.setPage(1);
 		setTimeout(() => {

@@ -98,7 +98,6 @@ export const AuthProvider = ({ children }) => {
 	const refreshUserState = async () => {
 		if (pb.authStore.isValid) {
 			const user = await pb.collection("users").authRefresh();
-			console.log("user amount:", user.record.balance);
 			setUser(user);
 			router.replace("(inside)/home");
 		} else {
@@ -123,8 +122,9 @@ export const AuthProvider = ({ children }) => {
 	};
 
 	const getTransactionsHistory = async () => {
-		const transactions = await pb.collection("transactionsHistory").getList(1, 10, { userId: user.record.id, sort: "-date" });
+		const transactions = await pb.collection("transactionsHistory").getList(1, 10, { userId: user.record.id, sort: "-created" });
 		setTransactionsHistory(transactions);
+		console.log("transactions:", transactions);
 	};
 
 	const showAlert = (title, message) => Alert.alert(title, message, [{ text: "OK" }]);
@@ -142,7 +142,7 @@ export const AuthProvider = ({ children }) => {
 	useEffect(() => {
 		if (!user) return;
 
-		setAuthorizedSpending(parseInt(user.record.balance) - parseInt(user.record.savingAmount));
+		setAuthorizedSpending(Number(user.record.balance) - Number(user.record.savingAmount));
 		getTransactionsHistory();
 
 		pb.collection("users")
