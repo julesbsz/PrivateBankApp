@@ -124,7 +124,6 @@ export const AuthProvider = ({ children }) => {
 	const getTransactionsHistory = async () => {
 		const transactions = await pb.collection("transactionsHistory").getList(1, 10, { userId: user.record.id, sort: "-created" });
 		setTransactionsHistory(transactions);
-		console.log("transactions:", transactions);
 	};
 
 	const showAlert = (title, message) => Alert.alert(title, message, [{ text: "OK" }]);
@@ -142,7 +141,7 @@ export const AuthProvider = ({ children }) => {
 	useEffect(() => {
 		if (!user) return;
 
-		setAuthorizedSpending(Number(user.record.balance) - Number(user.record.savingAmount));
+		setAuthorizedSpending(Math.round((Number(user.record.balance) - Number(user.record.savingAmount) + Number.EPSILON) * 100) / 100);
 		getTransactionsHistory();
 
 		pb.collection("users")

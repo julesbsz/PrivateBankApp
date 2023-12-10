@@ -21,7 +21,7 @@ const CardComponent = () => {
 			</View>
 
 			<View style={styles.secondaryCard}>
-				<Text style={styles.secondaryCardText}>Authorized spending</Text>
+				<Text style={styles.secondaryCardText}>Allowed spending</Text>
 				<Text style={styles.secondaryCardAmount}>${authorizedSpending}</Text>
 			</View>
 

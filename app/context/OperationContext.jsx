@@ -11,6 +11,8 @@ export const OperationProvider = ({ children }) => {
 
 	const createOperation = async (type, amount, description) => {
 		try {
+			console.log("creating op for:", type, amount, description);
+
 			// register transaction in db
 			const transactionData = {
 				user_id: user.record.id,

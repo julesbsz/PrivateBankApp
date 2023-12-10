@@ -37,3 +37,8 @@ yarn-error.*
 # pocketbase
 /pocketbase
 /pb_data/
+
+# misc
+ios/
+/builds/
+.vscode/
