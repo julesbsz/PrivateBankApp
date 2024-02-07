@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Pressable } from "react-native";
+import { View, Text, StyleSheet, Pressable, ScrollView } from "react-native";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import OperationItemComponent from "./OperationItem";
@@ -14,7 +14,7 @@ const TransactionsListComponent = () => {
 	}, [transactionsHistory]);
 
 	return (
-		<View style={styles.container}>
+		<ScrollView style={styles.container}>
 			<View style={styles.row}>
 				<Text style={styles.title}>Transactions history</Text>
 				<Pressable style={styles.link}>
@@ -33,7 +33,7 @@ const TransactionsListComponent = () => {
 					<Text style={{ color: "white", fontSize: 16, fontWeight: "semibold" }}>Pas de transactions pour le moment</Text>
 				</View>
 			)}
-		</View>
+		</ScrollView>
 	);
 };
 
@@ -41,8 +41,9 @@ export default TransactionsListComponent;
 
 const styles = StyleSheet.create({
 	container: {
-		height: 300,
+		height: "100%",
 		width: "100%",
+		paddingBottom: 100,
 	},
 	row: {
 		display: "flex",
