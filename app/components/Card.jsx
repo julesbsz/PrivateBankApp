@@ -4,7 +4,6 @@ import { AuthContext } from "../context/AuthContext";
 
 const CardComponent = () => {
 	const { user, authorizedSpending, handleLogout } = useContext(AuthContext);
-
 	const [balance, setBalance] = useState(0);
 
 	useEffect(() => {

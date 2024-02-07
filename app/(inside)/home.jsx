@@ -2,7 +2,6 @@
 import { View, StyleSheet, Text } from "react-native";
 import { useRef, useCallback, useState } from "react";
 import { BottomSheetModal, BottomSheetModalProvider, BottomSheetBackdrop } from "@gorhom/bottom-sheet";
-import { useSharedValue, useAnimatedScrollHandler, useAnimatedStyle, Animated } from "react-native-reanimated";
 
 // Components
 import CardComponent from "../components/Card";
@@ -78,7 +77,6 @@ const styles = StyleSheet.create({
 	},
 	modalContainer: {
 		backgroundColor: "#262329",
-		color: "red",
 	},
 	pagerView: {
 		flex: 1,
