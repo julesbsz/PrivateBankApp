@@ -10,9 +10,9 @@ const RegisterPage = () => {
 	const router = useRouter();
 
 	const [loading, setLoading] = useState(false);
-	const [email, setEmail] = useState("j.bousrez@outlook.com");
-	const [password, setPassword] = useState("12345678");
-	const [confirmedPassword, setConfirmedPassword] = useState("12345678");
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
+	const [confirmedPassword, setConfirmedPassword] = useState("");
 
 	useEffect(() => {
 		// user already connected -> redirect to home

@@ -10,8 +10,8 @@ const LoginPage = () => {
 	const router = useRouter();
 
 	const [loading, setLoading] = useState(false);
-	const [email, setEmail] = useState("j.bousrez@outlook.com");
-	const [password, setPassword] = useState("12345678");
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
 
 	const sanitizeFields = async () => {
 		setLoading(true);
