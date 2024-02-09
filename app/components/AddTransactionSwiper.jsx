@@ -156,7 +156,7 @@ const AddTransactionSwiperComponent = ({ bottomSheetModalRef, updateSnapPoints }
 			return exactMatch;
 		}
 
-		return matchingIcons.length > 0 ? matchingIcons[0] : "fa5-question";
+		return matchingIcons.length > 0 && input.length > 0 ? matchingIcons[0] : "fa5-question";
 	};
 
 	const renderIcon = (iconWithPrefix) => {
