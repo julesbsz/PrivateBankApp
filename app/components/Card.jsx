@@ -4,7 +4,6 @@ import { AuthContext } from "../context/AuthContext";
 
 const CardComponent = () => {
 	const { user, authorizedSpending, handleLogout } = useContext(AuthContext);
-
 	const [balance, setBalance] = useState(0);
 
 	useEffect(() => {
@@ -21,7 +20,7 @@ const CardComponent = () => {
 			</View>
 
 			<View style={styles.secondaryCard}>
-				<Text style={styles.secondaryCardText}>Authorized spending</Text>
+				<Text style={styles.secondaryCardText}>Allowed spending</Text>
 				<Text style={styles.secondaryCardAmount}>${authorizedSpending}</Text>
 			</View>
 

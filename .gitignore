@@ -38,6 +38,7 @@ yarn-error.*
 /pocketbase
 /pb_data/
 
+<<<<<<< HEAD
 # builds
 /builds/
 # @generated expo-cli sync-b5df6a44d8735348b729920a7406b633cfb74d4c
@@ -82,3 +83,9 @@ yarn-error.*
 # @end expo-cli
 
 ios/
+=======
+# misc
+ios/
+/builds/
+.vscode/
+>>>>>>> 6201611b8646a67b6ab835c3dc0e906b8cf219e0

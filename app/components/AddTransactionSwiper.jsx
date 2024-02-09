@@ -1,8 +1,11 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { View, Text, StyleSheet, Pressable, TextInput } from "react-native";
+import { View, Text, StyleSheet, Pressable, TextInput, KeyboardAvoidingView } from "react-native";
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from "react-native-reanimated";
 import PagerView from "react-native-pager-view";
-import { Entypo } from "@expo/vector-icons";
+
+import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
+import IonIconsGlyphMap from "../../assets/icons/Ionicons.json";
+import FontAwesomeGlyphMap from "../../assets/icons/FontAwesome5.json";
 
 import ButtonComponent from "./Button";
 import { useOperation } from "../context/OperationContext";
@@ -19,6 +22,9 @@ const AddTransactionSwiperComponent = ({ bottomSheetModalRef, updateSnapPoints }
 
 	const [amount, setAmount] = useState(null);
 	const [amountParsed, setAmountParsed] = useState(null);
+
+	const [iconName, setIconName] = useState("question");
+	const [iconElement, setIconElement] = useState(null);
 
 	const handleTabPress = (tabIndex) => {
 		activeTabIndex.value = tabIndex;
@@ -62,6 +68,12 @@ const AddTransactionSwiperComponent = ({ bottomSheetModalRef, updateSnapPoints }
 
 	const onChangeDescription = (text) => {
 		setDescription(text);
+
+		const iconName = getIconName(text);
+		const iconElement = renderIcon(iconName);
+
+		setIconName(iconName);
+		setIconElement(iconElement);
 	};
 
 	const handleDismissModalPress = useCallback(() => {
@@ -120,11 +132,60 @@ const AddTransactionSwiperComponent = ({ bottomSheetModalRef, updateSnapPoints }
 		return amount;
 	}
 
+	const combineGlyphMaps = (glyphMaps) => {
+		const combinedMap = {};
+		Object.entries(glyphMaps).forEach(([prefix, map]) => {
+			Object.keys(map).forEach((iconName) => {
+				combinedMap[`${prefix}-${iconName}`] = map[iconName];
+			});
+		});
+		return combinedMap;
+	};
+
+	const combinedGlyphMap = combineGlyphMaps({
+		fa5: FontAwesomeGlyphMap,
+		ion: IonIconsGlyphMap,
+	});
+
+	const getIconName = (input) => {
+		const sanitizedInput = input.toLowerCase().replace(/[^a-zA-Z0-9]/g, "");
+		const matchingIcons = Object.keys(combinedGlyphMap).filter((name) => name.toLowerCase().includes(sanitizedInput));
+
+		const exactMatch = matchingIcons.find((name) => name.split("-").slice(1).join("-") === sanitizedInput);
+		if (exactMatch) {
+			return exactMatch;
+		}
+
+		return matchingIcons.length > 0 && input.length > 0 ? matchingIcons[0] : "fa5-question";
+	};
+
+	const renderIcon = (iconWithPrefix) => {
+		const [prefix, ...iconParts] = iconWithPrefix.split("-");
+		const iconName = iconParts.join("-");
+
+		switch (prefix) {
+			case "fa5":
+				return <FontAwesome5 name={iconName} size={28} color="white" />;
+			case "ion":
+				return <Ionicons name={iconName} size={28} color="white" />;
+			default:
+				return <FontAwesome5 name={iconName} size={28} color="white" />;
+		}
+	};
+
 	useEffect(() => {
 		if (amount) {
 			setAmount(validateAndFormatAmount(amount));
 		}
 	}, [amount]);
+
+	useEffect(() => {
+		const iconName = getIconName("question");
+		const iconElement = renderIcon(iconName);
+
+		setIconName(iconName);
+		setIconElement(iconElement);
+	}, []);
 
 	return (
 		<PagerView style={{ flex: 1 }} initialPage={0} scrollEnabled={false} ref={scrollRef}>
@@ -152,24 +213,27 @@ const AddTransactionSwiperComponent = ({ bottomSheetModalRef, updateSnapPoints }
 				</View>
 			</View>
 
-			<View key="2" style={[styles.mainContainer, { gap: 20 }]}>
-				<View style={styles.iconPickerContainer}>
-					<Pressable style={styles.iconPicker}>
-						<Entypo name="plus" size={38} color="white" />
-					</Pressable>
-				</View>
+			<KeyboardAvoidingView {...(Platform.OS === "ios" ? { behavior: "padding" } : {})} style={styles.container}>
+				<View key="2" style={[styles.mainContainer, { gap: 20 }]}>
+					<View style={styles.iconPickerContainer}>
+						<Pressable style={styles.iconPicker}>{iconElement}</Pressable>
+					</View>
 
-				<View style={styles.inputRow}>
-					<TextInput style={styles.input} onChangeText={onChangeDescription} value={description} placeholder="DESCRIPTION" autoCorrect={false} autoFocus={true} />
-				</View>
+					<View style={styles.inputRow}>
+						<TextInput style={styles.input} onChangeText={onChangeDescription} value={description} placeholder="DESCRIPTION" autoCorrect={false} autoFocus={true} />
+					</View>
 
-				{description ? <ButtonComponent content={"Save"} onPressAction={handleOperation} /> : <ButtonComponent content={"Save"} disabled={true} />}
-			</View>
+					{description ? <ButtonComponent content={"Save"} onPressAction={handleOperation} /> : <ButtonComponent content={"Save"} disabled={true} />}
+				</View>
+			</KeyboardAvoidingView>
 		</PagerView>
 	);
 };
 
 const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+	},
 	mainContainer: {
 		marginTop: 20,
 		display: "flex",
@@ -246,8 +310,8 @@ const styles = StyleSheet.create({
 	},
 	iconPicker: {
 		backgroundColor: "#141316",
-		width: 150,
-		height: 150,
+		width: 100,
+		height: 100,
 		borderRadius: 100,
 		display: "flex",
 		flexDirection: "row",

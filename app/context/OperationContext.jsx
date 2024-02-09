@@ -11,6 +11,8 @@ export const OperationProvider = ({ children }) => {
 
 	const createOperation = async (type, amount, description) => {
 		try {
+			console.log("creating op for:", type, amount, description);
+
 			// register transaction in db
 			const transactionData = {
 				user_id: user.record.id,
@@ -22,11 +24,11 @@ export const OperationProvider = ({ children }) => {
 
 			// update balance
 			if (type === "income") {
-				const newBalance = Number(user.record.balance) + Number(amount);
+				const newBalance = Math.round((Number(user.record.balance) + Number(amount) + Number.EPSILON) * 100) / 100;
 				await pb.collection("users").update(user.record.id, { balance: Number(newBalance) });
 			}
 			if (type === "expense") {
-				const newBalance = Number(user.record.balance) - Number(amount);
+				const newBalance = Math.round((Number(user.record.balance) - Number(amount) + Number.EPSILON) * 100) / 100;
 				await pb.collection("users").update(user.record.id, { balance: Number(newBalance) });
 			}
 
