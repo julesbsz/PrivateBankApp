@@ -4,7 +4,10 @@ import { useRouter } from "expo-router";
 import { loadFonts } from "../../useFonts";
 import PocketBase, { AsyncAuthStore } from "pocketbase";
 import { Alert } from "react-native";
-import "eventsource-polyfill";
+// import "eventsource-polyfill";
+import eventsource from "react-native-sse";
+
+global.EventSource = eventsource;
 
 export const AuthContext = createContext({
 	pb: null,
