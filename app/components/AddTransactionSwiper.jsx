@@ -81,7 +81,7 @@ const AddTransactionSwiperComponent = ({ bottomSheetModalRef, updateSnapPoints }
 	}, [bottomSheetModalRef]);
 
 	const handleOperation = async () => {
-		const success = createOperation(operation, amountParsed, description);
+		const success = createOperation(operation, amountParsed, description, iconName);
 
 		if (!success) {
 			AlertComponent("Error", `Unable to create your ${operation} operation, please try again later.`, "OK");

@@ -1,9 +1,10 @@
 import { View, Text, StyleSheet } from "react-native";
 import React, { useEffect } from "react";
-import Ionicons from "@expo/vector-icons/Ionicons";
+import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
 
-const OperationItemComponent = ({ description, date, amount, type }) => {
+const OperationItemComponent = ({ description, date, amount, type, icon }) => {
 	const [formattedDate, setFormattedDate] = React.useState(null);
+	const [iconElement, setIconElement] = React.useState(null);
 
 	const formatDateTime = (dateStr) => {
 		const date = new Date(dateStr);
@@ -24,14 +25,30 @@ const OperationItemComponent = ({ description, date, amount, type }) => {
 		}
 	};
 
+	const renderIcon = (iconWithPrefix) => {
+		const [prefix, ...iconParts] = iconWithPrefix.split("-");
+		const iconName = iconParts.join("-");
+
+		switch (prefix) {
+			case "fa5":
+				return <FontAwesome5 name={iconName} size={28} color="white" />;
+			case "ion":
+				return <Ionicons name={iconName} size={28} color="white" />;
+			default:
+				return <FontAwesome5 name={iconName} size={28} color="white" />;
+		}
+	};
+
 	useEffect(() => {
 		setFormattedDate(formatDateTime(date));
+		setIconElement(renderIcon(icon));
+		console.log("icon", icon);
 	}, []);
 
 	return (
 		<View style={styles.container}>
 			<View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 15 }}>
-				<Ionicons name="fast-food" size={34} color="white" />
+				{iconElement && iconElement}
 
 				<View style={styles.infoContainer}>
 					<Text style={styles.title}>{description}</Text>
