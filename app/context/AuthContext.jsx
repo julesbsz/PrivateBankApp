@@ -4,7 +4,10 @@ import { useRouter } from "expo-router";
 import { loadFonts } from "../../useFonts";
 import PocketBase, { AsyncAuthStore } from "pocketbase";
 import { Alert } from "react-native";
-import "eventsource-polyfill";
+// import "eventsource-polyfill";
+import eventsource from "react-native-sse";
+
+global.EventSource = eventsource;
 
 export const AuthContext = createContext({
 	pb: null,
@@ -22,7 +25,7 @@ const store = new AsyncAuthStore({
 	save: async (serialized) => AsyncStorage.setItem("pb_auth", serialized),
 	initial: AsyncStorage.getItem("pb_auth"),
 });
-const pb = new PocketBase(process.env.POCKETBASE_URL, store);
+const pb = new PocketBase("https://privatebank.julesbousrez.fr", store);
 
 export const AuthProvider = ({ children }) => {
 	const [user, setUser] = useState(null);
