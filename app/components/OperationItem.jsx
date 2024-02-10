@@ -42,8 +42,7 @@ const OperationItemComponent = ({ description, date, amount, type, icon }) => {
 	useEffect(() => {
 		setFormattedDate(formatDateTime(date));
 		setIconElement(renderIcon(icon));
-		console.log("icon", icon);
-	}, []);
+	}, [date, icon]);
 
 	return (
 		<View style={styles.container}>
