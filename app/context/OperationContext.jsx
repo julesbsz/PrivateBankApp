@@ -9,7 +9,7 @@ export const useOperation = () => useContext(OperationContext);
 export const OperationProvider = ({ children }) => {
 	const { pb, user } = useContext(AuthContext);
 
-	const createOperation = async (type, amount, description) => {
+	const createOperation = async (type, amount, description, icon) => {
 		try {
 			console.log("creating op for:", type, amount, description);
 
@@ -19,6 +19,7 @@ export const OperationProvider = ({ children }) => {
 				type,
 				amount,
 				description,
+				icon,
 			};
 			await pb.collection("transactionsHistory").create(transactionData);
 
