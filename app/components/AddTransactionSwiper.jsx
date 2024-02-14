@@ -2,13 +2,11 @@ import React, { useState, useCallback, useEffect } from "react";
 import { View, Text, StyleSheet, Pressable, TextInput, KeyboardAvoidingView } from "react-native";
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from "react-native-reanimated";
 import PagerView from "react-native-pager-view";
+import { useOperation } from "../context/OperationContext";
 
-import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
-import IonIconsGlyphMap from "../../assets/icons/Ionicons.json";
-import FontAwesomeGlyphMap from "../../assets/icons/FontAwesome5.json";
+import { Ionicons, FontAwesome } from "@expo/vector-icons";
 
 import ButtonComponent from "./Button";
-import { useOperation } from "../context/OperationContext";
 import AlertComponent from "./Alert";
 import ToastComponent from "./Toast";
 
@@ -25,6 +23,8 @@ const AddTransactionSwiperComponent = ({ bottomSheetModalRef, updateSnapPoints }
 
 	const [iconName, setIconName] = useState("question");
 	const [iconElement, setIconElement] = useState(null);
+
+	const [combinedGlyphMap, setcombinedGlyphMap] = useState([]);
 
 	const handleTabPress = (tabIndex) => {
 		activeTabIndex.value = tabIndex;
@@ -132,31 +132,16 @@ const AddTransactionSwiperComponent = ({ bottomSheetModalRef, updateSnapPoints }
 		return amount;
 	}
 
-	const combineGlyphMaps = (glyphMaps) => {
-		const combinedMap = {};
-		Object.entries(glyphMaps).forEach(([prefix, map]) => {
-			Object.keys(map).forEach((iconName) => {
-				combinedMap[`${prefix}-${iconName}`] = map[iconName];
-			});
-		});
-		return combinedMap;
+	const combineGlyphMaps = () => {
+		const iconsGylphMap = [...Object.keys(Ionicons.glyphMap).map((name) => `ion-${name}`), ...Object.keys(FontAwesome.glyphMap).map((name) => `fa-${name}`)];
+		return iconsGylphMap;
 	};
-
-	const combinedGlyphMap = combineGlyphMaps({
-		fa5: FontAwesomeGlyphMap,
-		ion: IonIconsGlyphMap,
-	});
 
 	const getIconName = (input) => {
 		const sanitizedInput = input.toLowerCase().replace(/[^a-zA-Z0-9]/g, "");
-		const matchingIcons = Object.keys(combinedGlyphMap).filter((name) => name.toLowerCase().includes(sanitizedInput));
+		const matchingIcons = combinedGlyphMap.filter((name) => name.split("-").slice(1).join("-").includes(sanitizedInput));
 
-		const exactMatch = matchingIcons.find((name) => name.split("-").slice(1).join("-") === sanitizedInput);
-		if (exactMatch) {
-			return exactMatch;
-		}
-
-		return matchingIcons.length > 0 && input.length > 0 ? matchingIcons[0] : "fa5-question";
+		return matchingIcons.length > 0 && input.length > 0 ? matchingIcons[0] : "fa-question";
 	};
 
 	const renderIcon = (iconWithPrefix) => {
@@ -164,12 +149,12 @@ const AddTransactionSwiperComponent = ({ bottomSheetModalRef, updateSnapPoints }
 		const iconName = iconParts.join("-");
 
 		switch (prefix) {
-			case "fa5":
-				return <FontAwesome5 name={iconName} size={28} color="white" />;
+			case "fa":
+				return <FontAwesome name={iconName} size={32} color="white" />;
 			case "ion":
-				return <Ionicons name={iconName} size={28} color="white" />;
+				return <Ionicons name={iconName} size={32} color="white" />;
 			default:
-				return <FontAwesome5 name={iconName} size={28} color="white" />;
+				return <FontAwesome name={iconName} size={32} color="white" />;
 		}
 	};
 
@@ -180,11 +165,11 @@ const AddTransactionSwiperComponent = ({ bottomSheetModalRef, updateSnapPoints }
 	}, [amount]);
 
 	useEffect(() => {
-		const iconName = getIconName("question");
-		const iconElement = renderIcon(iconName);
+		// Combine glyph maps of imported icons libraries
+		setcombinedGlyphMap(combineGlyphMaps());
 
-		setIconName(iconName);
-		setIconElement(iconElement);
+		// Set default icon
+		setIconElement(renderIcon("fa-question"));
 	}, []);
 
 	return (
@@ -317,38 +302,6 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		alignItems: "center",
 		justifyContent: "center",
-	},
-});
-
-const buttonStyle = StyleSheet.create({
-	text: {
-		fontFamily: "PlusJakartaSans",
-		color: "#FFFFFF",
-		fontSize: 20,
-		textAlign: "center",
-		lineHeight: 36.5,
-	},
-	button: {
-		backgroundColor: "#13C782",
-		borderRadius: 50,
-		paddingTop: 13,
-		paddingBottom: 13,
-		paddingLeft: 86,
-		paddingRight: 86,
-	},
-	buttonShadow: {
-		shadowColor: "#13C782",
-		shadowOffset: {
-			width: 0,
-			height: 0,
-		},
-		shadowOpacity: 0.35,
-		shadowRadius: 31,
-		elevation: 0,
-	},
-	buttonText: {
-		fontFamily: "SpaceGrotesk",
-		color: "#000000",
 	},
 });
 
